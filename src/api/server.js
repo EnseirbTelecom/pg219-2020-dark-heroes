@@ -1,7 +1,7 @@
 //imports
 var express = require('express');
 var mongoose = require('mongoose');
-var user = require('./database/schema/User');
+var md = require('./database/model/User_model');
 
 
 //instantiate server
@@ -35,11 +35,16 @@ db.once('open', function() {
 // create collections based on schema 
 
 db.createCollection('User_Collection');
-var userSchema = user.user_schema();
-var User = mongoose.model('User', userSchema);
+var collection = db.collection('UserCollection');
+var modele = md.user_model();
 
-User.createCollection().then(function(collection) {
+modele.createCollection().then(function(collection) {
     console.log('Collection is created!');
 });
 
 //test add new user
+var userTest = md.user_init();
+userTest.email = 'test';
+userTest.last_name = 'jean';
+userTest.birthday = null;
+collection.insertOne(userTest);
