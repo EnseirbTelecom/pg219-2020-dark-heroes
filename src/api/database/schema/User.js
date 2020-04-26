@@ -1,0 +1,18 @@
+//Imports
+var mongoose = require('mongoose');
+
+var schema = mongoose.Schema;
+
+var User = new schema({
+    email: String,
+    password: String,
+    first_name: String,
+    last_name: String,
+    pseudo: String,
+    birthday: Date
+
+});
+
+exports.user_schema = function() {
+    return User;
+};
