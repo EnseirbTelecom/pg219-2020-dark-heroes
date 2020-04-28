@@ -19,7 +19,7 @@ exports.deploy = function() {
 
     // create collections based on schema 
 
-    db.createCollection('User_Collection');
+    db.createCollection('UserCollection');
     var collection = db.collection('UserCollection');
     var modele = md.user_model();
 

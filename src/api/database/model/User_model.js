@@ -4,7 +4,7 @@ var mongoose = require('mongoose');
 
 //model
 var userSchema = schem.user_schema();
-var model = mongoose.model('User', userSchema);
+var model = mongoose.model('UserCollection', userSchema);
 
 exports.user_model = function() {
     return model;
