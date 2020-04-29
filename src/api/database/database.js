@@ -2,7 +2,7 @@
 var mongoose = require('mongoose');
 var md = require('./model/User_model');
 
-// function of deployment 
+// function of deployment
 
 exports.deploy = function() {
 
@@ -17,7 +17,7 @@ exports.deploy = function() {
         console.log("database connected");
     });
 
-    // create collections based on schema 
+    // create collections based on schema
 
     db.createCollection('UserCollection');
     var collection = db.collection('UserCollection');
@@ -26,4 +26,5 @@ exports.deploy = function() {
     modele.createCollection().then(function(collection) {
         console.log('Collection is created!');
     });
+    return db;
 }
