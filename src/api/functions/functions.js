@@ -28,11 +28,9 @@ exports.addUser = function(req,res,db_collection){
 exports.findUser = function(req,res,db_collection){
   var user = db_collection.findOne({ _id: ObjectID(req.params.id) })
   .then(user => (user) ? res.json(user) : res.status(404).json({ error: "User not found." }))
-  .catch(err => console.log("err" + err))
 }
 
 exports.deleteUser = function(req,res,db_collection){
   db_collection.remove({ _id: ObjectID(req.params.id) })
     .then(command => (command.result.n == 1) ? res.json("User Successfully Deleted") : res.status(404).json({ error: "User not found." }))
-    .catch(err => console.log("err" + err))
 }
