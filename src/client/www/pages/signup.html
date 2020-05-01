@@ -48,7 +48,7 @@
 						<div class="item-inner">
 							<div class="item-title item-label">Date Of Birth</div>
 								<div class="item-input-wrap">
-									<input id="birth_date" type="text" placeholder="Select date" readonly="readonly" id="demo-calendar-modal"/>
+									<input id="birth_date" type="date" />
 								</div>
 						</div>
 					</div>
@@ -101,48 +101,54 @@
 	</div>
 </template>
 <script>
-  return {
+    return {
 
-    methods: {
-      back: function() {
-        this.$router.back();
-      },
+        methods: {
+            back: function() {
+                this.$router.back();
+            },
 
-      signup: function() {
-        const first_name = document.querySelector('#first_name').value;
-				const last_name = document.querySelector('#last_name').value;
-				const email = document.querySelector('#email').value;
-        const pseudo = document.querySelector('#pseudo').value;
-				const birth_date = document.querySelector('#birth_date').value;
-				const gender = document.querySelector('#gender').value;
-				const password = document.querySelector('#password').value;
-				const confirm_password = document.querySelector('#confirm_password').value;
+            signup: function() {
+                const first_name = document.querySelector('#first_name').value;
+                const last_name = document.querySelector('#last_name').value;
+                const email = document.querySelector('#email').value;
+                const pseudo = document.querySelector('#pseudo').value;
+                const birth_date = document.querySelector('#birth_date').value;
+                const gender = document.querySelector('#gender').value;
+                const password = document.querySelector('#password').value;
+                const confirm_password = document.querySelector('#confirm_password').value;
 
-				const queryData = this.signup_request();
-        fetch(queryData.url, {
-          method: queryData.method,
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-						email: email,
-						password: password,
-						first_name: first_name,
-            last_name: last_name,
-						birthday: null
-          })
-        })
-          .catch(err => this.$app.dialog.alert('Error ' + err))
-          .finally(() => {
-            this.$router.navigate("/");
-          });
-      },
+                const queryData = this.signup_request();
+                console.log('dans la fonction')
+                fetch(queryData.url, {
+                        method: queryData.method,
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            email: email,
+                            password: password,
+                            first_name: first_name,
+                            last_name: last_name,
+                            birthday: birth_date,
+                            gender: gender,
+                            password: password,
+                            pseudo: pseudo
+                        })
+                    })
+                    .catch(err => this.$app.dialog.alert('Error ' + err))
+                    .finally(() => {
+                        this.$router.navigate("/");
+                    });
+            },
 
-      signup_request: function() {
-          return {
-            url: "http://localhost:3000/Users",
-            method: "POST"
-          }
-      },
+            signup_request: function() {
+                return {
+                    url: "http://localhost:3000/Users",
+                    method: "POST"
+                }
+            },
 
+        }
     }
-  }
 </script>

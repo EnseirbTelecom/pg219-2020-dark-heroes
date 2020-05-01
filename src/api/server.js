@@ -1,7 +1,6 @@
 //imports
 var express = require('express');
 var db_module = require('./database/database');
-var test = require('./test/test');
 var functions = require('./functions/functions')
 
 //instantiate server
@@ -26,20 +25,20 @@ var db = db_module.deploy();
 var users = db.collection('UserCollection')
 
 server.get("/Users/:id", (req, res) => {
-  functions.findUser(req,res,users)
+    functions.findUser(req, res, users)
 })
 
 server.delete("/Users/:id", (req, res) => {
-  functions.deleteUser(req,res,users)
+    functions.deleteUser(req, res, users)
 })
 
-server.post("/Users", (req,res) => {
-  functions.addUser(req,res,users)
+server.post("/Users", (req, res) => {
+    functions.addUser(req, res, users)
 })
 
-server.get("/Users", (req, res) => {
-  users.find().toArray()
-    .then(items => res.json(items))
+server.get("/Users_GET", (req, res) => {
+    users.find().toArray()
+        .then(items => res.json(items))
 });
 
 server.get('/', function(req, res) {

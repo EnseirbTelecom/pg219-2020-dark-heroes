@@ -9,7 +9,8 @@ var User = new schema({
     first_name: String,
     last_name: String,
     pseudo: String,
-    birthday: Date
+    birthday: String,
+    gender: String
 
 });
 
