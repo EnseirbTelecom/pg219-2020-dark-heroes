@@ -12,9 +12,11 @@ const bodyParser = require("body-parser")
 server.use(bodyParser.json())
 server.use(bodyParser.urlencoded({ extended: false }))
 
-//launch server
-server.listen(8080, function() {
-    console.log('Seveur listenning');
+server.use((req, res, next) => {
+    res.append('Access-Control-Allow-Origin', ['*']);
+    res.append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH');
+    res.append('Access-Control-Allow-Headers', 'Content-Type');
+    next();
 });
 
 //bdd deployement
@@ -45,7 +47,7 @@ server.get('/', function(req, res) {
     res.status(200).send('<h1> Server deployed </h1>');
 });
 
-
-
-//test add new user
-test.test1();
+//launch server
+server.listen(3000, function() {
+    console.log('Seveur listenning');
+});

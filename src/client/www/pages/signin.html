@@ -1,5 +1,6 @@
 <template>
 	<div class="page">
+	<div class="page-content">
 		<form class="list" id="my-form">
 		  <ul>
 		    <li>
@@ -25,7 +26,11 @@
 		  </ul>
 		</form>
 		<div class="col button fill-form-from-data button-raised button-fill button-round col button color-yellow text-color-black">
-		  Submit
+			<a @click="signin" class="button" href="#">Submit</a>
 		</div>
+		<div class="col button button-raised button-round col button button-fill color-white text-color-black">
+			<a @click="back" class="button" href="#">Back</a>
+		</div>
+	</div>
 	</div>
 </template>
