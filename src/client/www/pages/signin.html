@@ -25,12 +25,29 @@
 		    </li>
 		  </ul>
 		</form>
-		<div class="col button fill-form-from-data button-raised button-fill button-round col button color-yellow text-color-black">
-			<a @click="signin" class="button" href="#">Submit</a>
+		<div class="block">
+			<a @click="signin" class="button" href="#">
+				<button class="col button button-raised button-fill button-round col button color-yellow text-color-black">Submit</button>
+			</a>
 		</div>
-		<div class="col button button-raised button-round col button button-fill color-white text-color-black">
-			<a @click="back" class="button" href="#">Back</a>
+		<div class="block">
+			<a @click="back" class="button" href="#">
+				<button class="col button button-raised button-round col button button-fill color-white text-color-black">Back</button>
+			</a>
 		</div>
 	</div>
 	</div>
 </template>
+<script>
+    return {
+        methods: {
+            back: function() {
+                this.$router.back();
+            },
+
+            signin: function() {
+
+            },
+        }
+    }
+</script>
