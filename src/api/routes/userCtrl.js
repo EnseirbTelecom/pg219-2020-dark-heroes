@@ -3,7 +3,7 @@ const ObjectID = require('mongodb').ObjectID
 var bcrypt = require('bcrypt');
 var jwt = require('jsonwebtoken');
 var userModel = require('../database/model/User_model');
-
+var jwtUtils = require('../utils/jwt.utils');
 
 
 
@@ -34,6 +34,16 @@ exports.addUser = function(req, res, db_collection) {
 }
 
 exports.connectUser = function(req, res, db_collection) {
+    //Getting auth header 
+    var headerAuth = req.headers['authorization'];
+    var userId = jwtUtils.getUserId(headerAuth);
+
+    //Test if already connected
+    if (userId > 0) {
+        return res.status(200).json({
+            'state': 'connected, token valid'
+        })
+    }
     // Param 
     console.log(ObjectID);
     var email = req.body.email;
@@ -50,7 +60,7 @@ exports.connectUser = function(req, res, db_collection) {
                 if (resBcrypt) {
                     return (res.status(200).json({
                         'state': 'connected',
-                        'token': 'token'
+                        'token': jwtUtils.generateTokenForUser(user)
                     }))
                 } else {
                     return (res.status(403).json({ error: 'failed to connect' }))

@@ -48,20 +48,45 @@
             signin: function() {
                 const password = document.querySelector('#password').value;
                 const email = document.querySelector('#email').value;
-
+                const token = localStorage.getItem('token');
                 const queryData = this.signin_request();
-                console.log('dans la fonction')
+                var headers;
+                if (token) {
+                    headers = {
+                        "Content-Type": "application/json",
+                        "authorization": token
+                    }
+                } else {
+                    headers = {
+                        "Content-Type": "application/json",
+                    }
+                }
+
                 fetch(queryData.url, {
-                        method: queryData.method,
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            email: email,
-                            password: password
-                        })
+                    method: queryData.method,
+                    headers: headers,
+
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
                     })
-                    .catch(err => this.$app.dialog.alert('Error ' + err))
+                })
+
+                // .then(function(response) {
+                //         console.log(response.status == 200);
+                //         if (response.status == 200) {
+                //             if (response.body.token) {
+                //                 console.log('reponse reçue');
+                //                 localStorage.setItem('token', response.body.token);
+                //                 alert('you are connected');
+                //                 this.$router.navigate("/");
+
+                //             }
+                //         } else {
+                //             alert(response.status + ':' + response);
+                //         }
+                //     })
+                .catch(err => this.$app.dialog.alert('Error ' + err))
                     .finally(() => {
                         this.$router.navigate("/");
                     });
