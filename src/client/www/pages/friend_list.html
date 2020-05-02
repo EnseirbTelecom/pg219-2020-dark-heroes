@@ -1,0 +1,58 @@
+<template>
+	<div class="page">
+	  <div class="page-content">
+      <div class="navbar color-theme-deeppurple">
+        <div class="navbar-bg"></div>
+        <div class="navbar-inner sliding">
+          <div class="left">
+            <a class="link back">
+              <i class="icon icon-back"></i>
+              <span class="if-not-md">Back</span>
+            </a>
+          </div>
+          <div class="title"><p class="text-color-deeppurple">Friend List</p></div>
+          <div class="right">
+            <a class="link icon-only">
+              <i class="icon material-icons md-only">person<span class="badge color-red">{{length}}</span></i>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="list">
+        <ul>
+          {{#each friend_list}}
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title margin-left">{{pseudo}}</div>
+                <div class="item-after">
+                  <div class="chip-media bg-color-deeppurple margin-right">
+                    <i class="icon f7-icons if-not-md">person</i>
+                    <i class="icon material-icons md-only">person</i>
+                  </div>
+                  </div>
+              </div>
+            </div>
+          </li>
+          {{/each}}
+        </ul>
+      </div>
+    </div>
+  </div>
+</template>
+<script>
+    return {
+      async data() {
+        let friend_list = [];
+        var length;
+        try {
+          friend_list = await fetch("http://localhost:3000/Users_GET")
+            .then(res => res.json());
+        } catch(err) {
+          this.$app.dialog.alert("Error " + err);
+        }
+        return { friend_list: friend_list,
+                 length: friend_list.length };
+      },
+    }
+</script>
