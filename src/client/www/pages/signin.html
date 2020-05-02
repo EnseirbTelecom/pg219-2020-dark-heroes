@@ -8,7 +8,7 @@
 		        <div class="item-inner">
 		          <div class="item-title item-label">E-mail</div>
 		          <div class="item-input-wrap">
-		            <input type="text" name="email" placeholder="E-mail">
+		            <input id="email" type="text"  placeholder="E-mail">
 		          </div>
 		        </div>
 		      </div>
@@ -18,7 +18,7 @@
 		        <div class="item-inner">
 		          <div class="item-title item-label">Password</div>
 		          <div class="item-input-wrap">
-		            <input type="email" name="password" placeholder="Password">
+		            <input id="password" type="password"  placeholder="Password">
 		          </div>
 		        </div>
 		      </div>
@@ -46,8 +46,35 @@
             },
 
             signin: function() {
+                const password = document.querySelector('#password').value;
+                const email = document.querySelector('#email').value;
+
+                const queryData = this.signin_request();
+                console.log('dans la fonction')
+                fetch(queryData.url, {
+                        method: queryData.method,
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            email: email,
+                            password: password
+                        })
+                    })
+                    .catch(err => this.$app.dialog.alert('Error ' + err))
+                    .finally(() => {
+                        this.$router.navigate("/");
+                    });
 
             },
+
+            signin_request: function() {
+                return {
+                    url: "http://localhost:3000/Connect",
+                    method: "POST"
+                }
+            },
+
         }
     }
 </script>

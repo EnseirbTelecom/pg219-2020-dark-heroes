@@ -17,6 +17,7 @@ exports.user_init = function() {
     user.first_name = null;
     user.last_name = null;
     user.birthday = null;
+    user.gender = null;
 
     return (user);
 

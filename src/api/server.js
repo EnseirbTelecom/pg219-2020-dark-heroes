@@ -1,15 +1,14 @@
 //imports
 var express = require('express');
 var db_module = require('./database/database');
-var functions = require('./functions/functions')
-
+var functions = require('./routes/userCtrl');
 //instantiate server
 var server = express();
 
 //Parse Requests
 const bodyParser = require("body-parser")
 server.use(bodyParser.json())
-server.use(bodyParser.urlencoded({ extended: false }))
+server.use(bodyParser.urlencoded({ extended: true }))
 
 server.use((req, res, next) => {
     res.append('Access-Control-Allow-Origin', ['*']);
@@ -44,6 +43,10 @@ server.get("/Users_GET", (req, res) => {
 server.get('/', function(req, res) {
     res.setHeader('Content-Type', 'text/html');
     res.status(200).send('<h1> Server deployed </h1>');
+});
+
+server.post("/Connect", (req, res) => {
+    functions.connectUser(req, res, users);
 });
 
 //launch server
