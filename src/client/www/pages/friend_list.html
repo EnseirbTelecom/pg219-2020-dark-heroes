@@ -10,33 +10,37 @@
               <span class="if-not-md">Back</span>
             </a>
           </div>
-          <div class="title"><p class="text-color-deeppurple">Friend List</p></div>
+          <div class="title" style="font-family: cursive"><p class="text-color-deeppurple">Friend List</p></div>
           <div class="right">
             <a class="link icon-only">
-              <i class="icon material-icons md-only">person<span class="badge color-red">{{length}}</span></i>
+              <i class="icon material-icons md-only">people_alt<span class="badge color-red">{{length}}</span></i>
+							<i class="icon f7-icons if-not-md">person_2_fill<span class="badge color-red">{{length}}</span></i>
             </a>
           </div>
         </div>
       </div>
-      <div class="list">
-        <ul>
-          {{#each friend_list}}
-          <li>
-            <div class="item-content">
-              <div class="item-inner">
-                <div class="item-title margin-left">{{pseudo}}</div>
-                <div class="item-after">
-                  <div class="chip-media bg-color-deeppurple margin-right">
-                    <i class="icon f7-icons if-not-md">person</i>
-                    <i class="icon material-icons md-only">person</i>
-                  </div>
-                  </div>
-              </div>
-            </div>
-          </li>
-          {{/each}}
-        </ul>
-      </div>
+			<div class="list sortable">
+	      <ul>
+					{{#each friend_list}}
+	        <li>
+	          <div class="item-content">
+	            <div class="item-media">
+								<i class="icon f7-icons if-not-md color-deeppurple">person</i>
+								<i class="icon material-icons md-only color-deeppurple">person_outline</i>
+							</div>
+	            <div class="item-inner">
+								<a href="#tab" class="link">
+	              	<div class="item-title" style = "text-transform:capitalize; font-family: cursive; color: black">{{pseudo}}</div>
+								</a>
+	            </div>
+	          </div>
+	          <div class="sortable-handler"></div>
+	        </li>
+					{{/each}}
+	      </ul>
+	    </div>
+
+
     </div>
   </div>
 </template>

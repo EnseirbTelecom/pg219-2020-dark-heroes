@@ -19,6 +19,10 @@ var routes = [
     path: '/friend',
     componentUrl: '../pages/friend.html',
   },
+  {
+    path: '/main',
+    componentUrl: '../pages/main.html',
+  },
   // Default route (404 page). MUST BE THE LAST
   {
     path: '(.*)',

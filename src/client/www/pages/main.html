@@ -1,0 +1,62 @@
+<template>
+  <div class="page">
+    <div class="navbar">
+      <div class="navbar-bg"></div>
+      <div class="navbar-inner align-items-center">
+        <div class="left">
+          <div class="chip margin-left">
+            <div class="chip-media bg-color-lime">
+              <a class="link icon-only color-black">
+                <i class="icon f7-icons if-not-md">placemark_fill</i>
+                <i class="icon material-icons md-only">location_on</i>
+              </a>
+            </div>
+            <div class="chip-label text-color-black">SHARE</div>
+          </div>
+        </div>
+        <div class="title padding-left" style = "width: 357;
+                                              font-size: 17pt;
+                                              font-family: cursive;
+                                              color: black;
+                                              filter:drop-shadow(3px 3px 2px #000000);">
+          Friend Finder
+        </div>
+        <div class="right">
+          <a class="link icon-only color-green">
+            <i class="icon f7-icons if-not-md">location_fill</i>
+            <i class="icon material-icons md-only md-48">near_me</i>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="toolbar tabbar tabbar-labels toolbar-bottom color-white">
+      <div class="toolbar-inner">
+
+      <a href="#tab-1" class="tab-link tab-link-active">
+        <i class="icon icon-fill f7-icons if-not-md color-black">person_alt_circle</i>
+        <i class="icon material-icons md-only color-black">person_alt_circle</i>
+        <span class="tabbar-label text-color-black">
+          <b>PROFILE</b>
+        </span>
+      </a>
+
+      <a href="#tab-2" class="tab-link tab-link-active">
+        <i class="icon f7-icons if-not-md color-blue">plus_rectangle</i>
+        <i class="icon material-icons md-only color-blue">add_circle_outline</i>
+        <span class="tabbar-label text-color-blue">
+            <b>ADD A FRIEND</b>
+        </span>
+      </a>
+
+      <a href="/friend_list" class="tab-link">
+        <i class="icon f7-icons if-not-md color-red">person_3_fill</i>
+        <i class="icon material-icons md-only color-red">people_outline</i>
+        <span class="tabbar-label text-color-red">
+          <b>FRIENDS LIST</b>
+        </span>
+      </a>
+
+      </div>
+    </div>
+  </div>
+</template>
