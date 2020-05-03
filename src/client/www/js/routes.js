@@ -23,6 +23,14 @@ var routes = [
     path: '/main',
     componentUrl: '../pages/main.html',
   },
+  {
+    path: '/add_friend',
+    componentUrl: '../pages/add_friend.html',
+  },
+  {
+    path: '/profile',
+    componentUrl: '../pages/profile.html',
+  },
   // Default route (404 page). MUST BE THE LAST
   {
     path: '(.*)',
