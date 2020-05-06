@@ -59,25 +59,6 @@ var routes = [{
         path: '/profile',
         componentUrl: '../pages/profile.html',
     },
-    // {
-    //     path: '/is-already-log/',
-    //     async(routeTo, routeFrom, resolve, reject) {
-    //       console.log(routeTo);
-    //       console.log(toutefrom)
-    //         // var userIsLoggedIn = true
-    //         // if (userIsLoggedIn) {
-    //         //     resolve({
-    //         //         url: '../pages/main.html',
-    //         //     });
-    //         // } else {
-    //         //     resolve({
-    //         //         loginScreen: {
-    //         //             url: '../pages/home.html'
-    //         //         },
-    //         //     });
-    //         // }
-
-    //     },
     // Default route (404 page). MUST BE THE LAST
     {
         path: '(.*)',

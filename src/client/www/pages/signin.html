@@ -65,7 +65,6 @@
                     })
                     .then(res => res.json())
                     .then(res => {
-                        console.log(res.status == 200);
                         if (res.status == 200) {
                             if (res.token) {
                                 console.log('reponse reçue');
@@ -78,7 +77,7 @@
                             alert(res.error);
                         }
                     })
-                    // .catch(err => this.$app.dialog.alert('Error ' + err))
+                    .catch(err => this.$app.dialog.alert('Error ' + err))
                     // // .finally(() => {
                     //     this.$router.navigate("/");
                     // })
