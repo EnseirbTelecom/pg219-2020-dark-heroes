@@ -4,7 +4,32 @@ var routes = [{
     },
     {
         path: '/loading',
-        componentUrl: '../pages/loading.html',
+        redirect: async function(route, resolve, reject) {
+            console.log('test');
+            const connected = await isAlreadyConnected();
+            console.log(connected);
+
+            // if we have "user" query parameter
+            if (connected) {
+                // redirect to such url
+                app.dialog.confirm(
+                    'an account is already connected, do you want to continue?',
+                    function() {
+                        // go to main
+                        resolve('/main');
+                    },
+                    function() {
+                        // go back and disconnect
+                        localStorage.removeItem('token');
+                        resolve('/');
+                    })
+            }
+            // otherwise do nothing
+            else {
+                console.log('okokokk')
+                resolve('/');
+            }
+        },
     },
     {
         path: '/signup',
@@ -60,9 +85,8 @@ var routes = [{
     },
 ];
 
-async function urlStart() {
+async function isAlreadyConnected() {
     var token = localStorage.getItem('token');
-    console.log(token)
     var queryData = method();
     if (token) {
         const res = await fetch(queryData.url, {
@@ -75,23 +99,15 @@ async function urlStart() {
         })
         const status = await res.status;
         if (status == 200) {
-            this.$router.navigate('/main') // si le token existe et est valide
+            console.log(true)
+            return (true); // si le token existe et est valide
         } else {
-            this.$router.navigate('/main')
+            return (false); // token existe mais n'est plus valable
         }
-        // .catch(err => console.log('Error ' + err))
-        // .then(res => {
-        //     if (res.status == 200) {
-        //         return ('/main'); // si le token existe et est valide
-        //     } else {
-        //         return ('/');
-        //     }
-        // });
-
 
 
     } else {
-        this.$router.navigate('/main')
+        return (false);
     }
 }
 
