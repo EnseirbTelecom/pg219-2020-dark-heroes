@@ -1,0 +1,57 @@
+<template>
+        <div class="page">
+          <div class="page-content">
+          <div class="container-fluid">
+            <h1 class="display-4"><strong>Friend Finder :</strong></h1><br>
+            <center>
+                    <p><strong>loading! we are checking if you are already connected</strong></p>
+                    <div class="progressbar-infinite"></div>
+            </center>
+          </div>
+          </div>
+        </div>
+</template>
+
+
+<script>
+    return {
+        methods: {
+            isAlreadyConnected: async function() {
+                var token = localStorage.getItem('token');
+                var queryData = method();
+                if (token) {
+                    const res = await fetch(queryData.url, {
+                        method: queryData.method,
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": "Bearer " + token,
+
+                        },
+                    })
+                    const status = await res.status;
+                    if (status == 200) {
+                        console.log(true)
+                        return (true); // si le token existe et est valide
+                    } else {
+                        return (false); // token existe mais n'est plus valable
+                    }
+
+
+                } else {
+                    return (false);
+                }
+            }
+
+        },
+        on: {
+            pageAfterIn: function(e, page) {
+                console.log('ok')
+                if (this.isAlreadyConnected() == true) {
+                    setTimeout(() => this.$router.navigate('/main'), 2000);
+                } else {
+                    setTimeout(() => this.$router.navigate('/'), 2000);
+                }
+            }
+        }
+    }
+</script>

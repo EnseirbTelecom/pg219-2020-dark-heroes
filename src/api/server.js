@@ -13,7 +13,7 @@ server.use(bodyParser.urlencoded({ extended: true }))
 server.use((req, res, next) => {
     res.append('Access-Control-Allow-Origin', ['*']);
     res.append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH');
-    res.append('Access-Control-Allow-Headers', 'Content-Type');
+    res.append('Access-Control-Allow-Headers', 'Content-Type,Authorization');
     next();
 });
 
@@ -48,6 +48,11 @@ server.get('/', function(req, res) {
 server.post("/Connect", (req, res) => {
     functions.connectUser(req, res, users);
 });
+
+server.post("/isConnect", (req, res) => {
+    console.log("requête de connexion")
+    functions.isConnect(req, res);
+})
 
 //launch server
 server.listen(3000, function() {

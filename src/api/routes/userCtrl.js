@@ -34,16 +34,6 @@ exports.addUser = function(req, res, db_collection) {
 }
 
 exports.connectUser = function(req, res, db_collection) {
-    //Getting auth header 
-    var headerAuth = req.headers['authorization'];
-    var userId = jwtUtils.getUserId(headerAuth);
-
-    //Test if already connected
-    if (userId > 0) {
-        return res.status(200).json({
-            'state': 'connected, token valid'
-        })
-    }
     // Param 
     console.log(ObjectID);
     var email = req.body.email;
@@ -60,7 +50,8 @@ exports.connectUser = function(req, res, db_collection) {
                 if (resBcrypt) {
                     return (res.status(200).json({
                         'state': 'connected',
-                        'token': jwtUtils.generateTokenForUser(user)
+                        'token': jwtUtils.generateTokenForUser(user),
+                        'status': 200
                     }))
                 } else {
                     return (res.status(403).json({ error: 'failed to connect' }))
@@ -71,6 +62,25 @@ exports.connectUser = function(req, res, db_collection) {
 
 
 
+}
+
+exports.isConnect = function(req, res) {
+    //Getting auth header 
+    var headerAuth = req.headers.authorization;
+    console.log(req.headers.authorization)
+    var userId = jwtUtils.getUserId(headerAuth);
+
+    //Test if already connected
+    if (userId != -1) {
+        console.log('token id ok');
+        return res.status(200).json({
+            'state': 'connected, token valid'
+        })
+    } else {
+        return res.status(403).json({
+            'error': 'token not valid'
+        })
+    }
 }
 
 exports.findUser = function(req, res, db_collection) {

@@ -15,20 +15,23 @@ module.exports = {
     },
 
     parseAuthorization: function(authorization) {
-        return (authorization != null) ? authorization.replace('Bearer', '') : null;
+        return (authorization != null) ? authorization.replace('Bearer ', '') : null;
 
     },
 
     getUserId: function(authorization) {
         var userId = -1;
+        console.log(authorization);
         var token = module.exports.parseAuthorization(authorization);
+        console.log(token);
         if (token != null) {
             try {
                 var jwtToken = jwt.verify(token, JWT_SIGN_SECRET);
                 if (jwtToken != null) {
                     userId = jwtToken.userId;
+                    console.log(userId)
                 }
-            } catch (err) {}
+            } catch (err) { console.log("bug") }
         }
         return userId;
     }
