@@ -2,6 +2,7 @@
 var express = require('express');
 var db_module = require('./database/database');
 var functions = require('./routes/userCtrl');
+var friends = require('./routes/friendCtrl');
 //instantiate server
 var server = express();
 
@@ -22,6 +23,8 @@ var db = db_module.deploy();
 
 //configure routes
 var users = db.collection('UserCollection')
+
+//Users
 
 server.get("/Users/:id", (req, res) => {
     functions.findUser(req, res, users)
@@ -52,7 +55,19 @@ server.post("/Connect", (req, res) => {
 server.post("/isConnect", (req, res) => {
     console.log("requête de connexion")
     functions.isConnect(req, res);
-})
+});
+//friend
+server.get("/friends", (req, res) => {
+    console.log("okok")
+    friends.getFriends(req, res);
+});
+server.post("/addFriend", (req, res) => {
+    //send a friend request
+    friends.addFriend(req, res);
+});
+server.post("/friendRequestReply", (req, res) => {
+    friends.friendRequestReply(req, res);
+});
 
 //launch server
 server.listen(3000, function() {

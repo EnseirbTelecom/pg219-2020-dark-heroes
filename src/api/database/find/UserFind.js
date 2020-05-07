@@ -1,5 +1,6 @@
 // imports
 var mongoose = require('mongoose');
+const ObjectID = require('mongodb').ObjectID
 
 // function
 
@@ -16,6 +17,13 @@ exports.getUserByEmail = async function(email) {
 
 exports.getUserByPseudo = async function(pseudo) {
     const user = await collection.findOne({ pseudo: pseudo });
+    return (user);
+
+}
+
+exports.getUserByID = async function(id) {
+    const user = await collection.findOne({ _id: ObjectID(id) });
+    console.log(user);
     return (user);
 
 }

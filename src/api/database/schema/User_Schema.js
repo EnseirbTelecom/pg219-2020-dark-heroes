@@ -10,7 +10,10 @@ var User = new schema({
     last_name: String,
     pseudo: String,
     birthday: String,
-    gender: String
+    gender: String,
+    friends: [String],
+    friend_requests: [String],
+    friend_pending: [String]
 
 });
 

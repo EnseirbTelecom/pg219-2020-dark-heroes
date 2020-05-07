@@ -18,6 +18,9 @@ exports.user_init = function() {
     user.last_name = null;
     user.birthday = null;
     user.gender = null;
+    user.friends = [];
+    user.friend_requests = [];
+    user.friend_pending = [];
 
     return (user);
 
