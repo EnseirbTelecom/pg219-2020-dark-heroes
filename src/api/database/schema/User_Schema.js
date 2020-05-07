@@ -11,6 +11,13 @@ var User = new schema({
     pseudo: String,
     birthday: String,
     gender: String,
+    current_lat: String,
+    current_long: String,
+    activation_date: String,
+    duration: Number,
+    hist_lat: [String],
+    hist_long: [String],
+    hist_date: [String],
     friends: [String],
     friend_requests: [String],
     friend_pending: [String]

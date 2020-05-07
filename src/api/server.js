@@ -3,6 +3,7 @@ var express = require('express');
 var db_module = require('./database/database');
 var functions = require('./routes/userCtrl');
 var friends = require('./routes/friendCtrl');
+var positions = require('./routes/locCtrl');
 //instantiate server
 var server = express();
 
@@ -68,6 +69,35 @@ server.post("/addFriend", (req, res) => {
 server.post("/friendRequestReply", (req, res) => {
     friends.friendRequestReply(req, res);
 });
+
+//Position
+
+server.get("/date", (req, res) => {
+    console.log("date")
+    positions.getHistDate(req, res);
+});
+
+server.get("/lat", (req, res) => {
+    console.log("lattitude")
+    positions.getHistLat(req, res);
+});
+
+server.get("/long", (req, res) => {
+    console.log("longitude")
+    positions.getHistLong(req, res);
+});
+
+//Sauvegarder current position (marche si la durée + la date d'activation est inférieur a la date actuelle)
+
+server.post("/savePos", (req, res) => {
+    positions.addPosition(req, res);
+});
+
+//Supprimer une position
+
+server.delete("/Pos/:date", (req, res) => {
+    positions.deletePosition(req, res, users)
+})
 
 //launch server
 server.listen(3000, function() {
