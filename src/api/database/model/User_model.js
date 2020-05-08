@@ -18,16 +18,10 @@ exports.user_init = function() {
     user.last_name = null;
     user.birthday = null;
     user.gender = null;
-    user.current_lat = null,
-    user.current_long = null,
-    user.activation_date = null,
-    user.duration = null,
-    user.hist_lat = [],
-    user.hist_long = [],
-    user.hist_date = [],
     user.friends = [];
     user.friend_requests = [];
     user.friend_pending = [];
+    user.hist_positions = [];
 
     return (user);
 

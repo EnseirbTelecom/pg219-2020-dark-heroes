@@ -15,12 +15,15 @@ var User = new schema({
     current_long: String,
     activation_date: String,
     duration: Number,
-    hist_lat: [String],
-    hist_long: [String],
-    hist_date: [String],
+    hist_positions: [{
+        hist_lat: String,
+        hist_long: String,
+        hist_date: String,
+        message: String,
+    }],
     friends: [String],
     friend_requests: [String],
-    friend_pending: [String]
+    friend_pending: [String],
 
 });
 

@@ -95,26 +95,26 @@ exports.friendRequestReply = async function(req, res) {
                 var friendFriends = Friend.friends;
                 userFriends.push(Friend.email);
                 friendFriends.push(user.email);
-                userFriendRequests.forEach(element => {
+                userFriendRequests.forEach(function(element, index) {
                     if (element == Friend.email)
-                        userFriendRequests.splice(element);
+                        userFriendRequests.splice(index, 1);
                 });
-                friendFriendPending.forEach(element => {
+                friendFriendPending.forEach(function(element, index) {
                     if (element == user.email)
-                        friendFriendPending.splice(element);
+                        friendFriendPending.splice(index, 1);
                 });
                 await up.updateUser(userId, { friends: userFriends, friend_requests: userFriendRequests });
                 await up.updateUser(Friend._id, { friends: friendFriends, friend_pending: friendFriendPending });
 
                 return res.status(200).json({ state: friend + ' ajouté aux amis ', status: 200 })
             } else {
-                userFriendRequests.forEach(element => {
+                userFriendRequests.forEach(function(element, index) {
                     if (element == Friend.email)
-                        userFriendRequests.splice(element);
+                        userFriendRequests.splice(index, 1);
                 });
-                friendFriendPending.forEach(element => {
+                friendFriendPending.forEach(function(element, index) {
                     if (element == Friend.email)
-                        friendFriendPending.splice(element);
+                        friendFriendPending.splice(index, 1);
                 });
                 await up.updateUser(userId, { friend_requests: userFriendRequests });
                 await up.updateUser(Friend._id, { friend_pending: friendFriendPending });

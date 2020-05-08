@@ -1,7 +1,5 @@
 //imports
 var mongoose = require('mongoose');
-var md = require('./model/User_model');
-
 // function of deployment
 
 exports.deploy = function() {
@@ -19,12 +17,16 @@ exports.deploy = function() {
 
     // create collections based on schema
 
-    db.createCollection('UserCollection');
-    var collection = db.collection('UserCollection');
-    var modele = md.user_model();
+    db.createCollection('UserCollection')
+        .then(function(userCollection) {
+            console.log('UserCollection is created!'); // Check model/UserCollection to see the model of user
+        });
 
-    modele.createCollection().then(function(collection) {
-        console.log('Collection is created!');
-    });
+
+    db.createCollection('PositionCollection')
+        .then(function(userCollection) {
+            console.log('PositionCollection is created!'); // Check model/PositionCollection to see the model of position 
+        });
+
     return db;
 }

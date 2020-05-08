@@ -12,5 +12,4 @@ var collection = db.collection('UserCollection');
 exports.updateUser = async function(id, update) {
     const filter = { _id: ObjectID(id) };
     const UserUp = await collection.updateOne(filter, { $set: update });
-    console.log(UserUp);
 }

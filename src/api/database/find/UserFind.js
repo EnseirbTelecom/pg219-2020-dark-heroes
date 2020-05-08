@@ -23,7 +23,6 @@ exports.getUserByPseudo = async function(pseudo) {
 
 exports.getUserByID = async function(id) {
     const user = await collection.findOne({ _id: ObjectID(id) });
-    console.log(user);
     return (user);
 
 }
