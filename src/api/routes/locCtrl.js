@@ -181,3 +181,29 @@ exports.deletePosition = async function(req, res) {
 
     }
 }
+
+exports.getFriendsCurrentPosition = async function(req, res) {
+    //Getting auth header 
+    var headerAuth = req.headers.authorization;
+    var userId = jwtUtils.getUserId(headerAuth);
+
+    if (userId != -1) {
+        var user = await findUser.getUserByID(userId);
+        var friends = user.friends;
+        console.log(friends);
+        if (friends != null) {
+            const friendsCurrentPosition = await findPosition.findFriendsPosition(friends);
+            console.log(friendsCurrentPosition);
+            if (friendsCurrentPosition != null) {
+                return res.status(200).json({ friendsPosition: friendsCurrentPosition, status: 200 });
+            } else {
+                return res.status(201).json({ state: "no friends position are available", status: 200 });
+            }
+        } else {
+            return res.status(201).json({ state: "add friends to consult positions", status: 201 })
+        }
+
+
+    }
+
+}

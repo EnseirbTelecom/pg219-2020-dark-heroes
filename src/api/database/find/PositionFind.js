@@ -13,3 +13,10 @@ exports.findPositionByEmail = async function(email) {
     const position = await collection.findOne({ email: email });
     return position;
 }
+
+exports.findFriendsPosition = async function(friends) {
+    const positions = await collection.find({
+        email: { $in: ["vt"] }
+    });
+    return positions.toArray();
+}
