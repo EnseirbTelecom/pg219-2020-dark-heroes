@@ -48,7 +48,7 @@
 							</div>
 	            <div class="item-inner">
 								<a href="#tab" class="link">
-	              	<div class="item-title" style = "text-transform:capitalize; font-family: cursive; color: black">{{pseudo}}</div>
+	              	<div class="item-title" style = "text-transform:capitalize; font-family: cursive; color: black">{{email}}</div>
 								</a>
 	            </div>
 	          </div>
@@ -59,12 +59,13 @@
 	    </div>
 			{{else}}
 				<div class="item-title item-label" style = "font-size: 12pt;
-																										margin: 0;
-																									  position: absolute;
-																									  top: 50%;
-																									  -ms-transform: translateY(-50%);
-																									  transform: translateY(-50%); color: grey">
-						<center><p><b>Your friends list is empty. Please, add new friends.<b><p><center>
+	                                                  margin: 0;
+	                                                  position: absolute;
+	                                                  top: 50%;
+	                                                  left: 50%;
+	                                                  -ms-transform: translate(-50%, -50%);
+	                                                  transform: translate(-50%, -50%); color: grey">
+						<p><b>Your friends list is empty. Please, add new friends.<b></p>
 				</div>
 			{{/if}}
 
@@ -115,7 +116,6 @@
         } catch(err) {
           this.$app.dialog.alert("Error " + err);
         }
-				console.log(friend_requests);
 				return { friend_list: friend_list.friendlist,
                  length: friend_list.friendlist.length,
 							   requestslength: friend_requests.friendrequests.length };

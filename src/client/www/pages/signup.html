@@ -117,12 +117,11 @@
                 const password = document.querySelector('#password').value;
                 const confirm_password = document.querySelector('#confirm_password').value;
                 if (password !== confirm_password) {
-                    alert('password and confirm_password are different')
+                    alert('Passwords does not match.')
                     document.querySelector('#password').value = "";
                     const confirm_password = document.querySelector('#confirm_password').value = "";
                 } else {
                     const queryData = this.signup_request();
-                    console.log('dans la fonction')
                     fetch(queryData.url, {
                             method: queryData.method,
                             headers: {
@@ -141,7 +140,6 @@
                         })
                         .then(res => res.json())
                         .then(res => {
-                            console.log(res);
                             if (res.status == 200) {
                                 alert(res.state);
                                 this.$router.navigate("/");

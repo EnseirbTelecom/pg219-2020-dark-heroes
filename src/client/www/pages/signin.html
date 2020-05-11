@@ -67,9 +67,8 @@
                     .then(res => {
                         if (res.status == 200) {
                             if (res.token) {
-                                console.log('reponse reçue');
                                 localStorage.setItem('token', res.token);
-                                alert('you are connected');
+                                alert('Login succes.');
                                 this.$router.navigate("/main");
 
                             }

@@ -54,7 +54,6 @@ server.post("/Connect", (req, res) => {
 });
 
 server.post("/isConnect", (req, res) => {
-    console.log("requête de connexion")
     functions.isConnect(req, res);
 });
 //friend
@@ -75,12 +74,10 @@ server.post("/friendRequestReply", (req, res) => {
 //Position
 
 server.get("/histPosition", (req, res) => {
-    console.log("hist_position")
     positions.getHistPosition(req, res);
 });
 
 server.get("/currPosition", (req, res) => {
-    console.log("current_position")
     positions.getCurrentPosition(req, res);
 
 });

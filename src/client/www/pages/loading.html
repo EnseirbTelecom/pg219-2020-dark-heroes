@@ -30,7 +30,6 @@
                     })
                     const status = await res.status;
                     if (status == 200) {
-                        console.log(true)
                         return (true); // si le token existe et est valide
                     } else {
                         return (false); // token existe mais n'est plus valable
@@ -45,7 +44,6 @@
         },
         on: {
             pageAfterIn: function(e, page) {
-                console.log('ok')
                 if (this.isAlreadyConnected() == true) {
                     setTimeout(() => this.$router.navigate('/main'), 2000);
                 } else {

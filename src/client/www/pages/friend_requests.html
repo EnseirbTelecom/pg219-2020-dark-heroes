@@ -36,8 +36,8 @@
                 <b>Pseudo : </b>{{pseudo}}
               </div>
               <div class="card-footer">
-                <button @click="acceptfriend" class="button button-round button-active color-green"><center>Accept</center></button>
-                <button @click="refusefriend" class="button button-round color-red"><center>Refuse</center></button>
+                <button @click="acceptfriend('{{email}}')" class="button button-round button-active color-green"><center>Accept</center></button>
+                <button @click="refusefriend('{{email}}')" class="button button-round color-red"><center>Refuse</center></button>
               </div>
             </div>
           </li>
@@ -49,9 +49,10 @@
                                                   margin: 0;
                                                   position: absolute;
                                                   top: 50%;
-                                                  -ms-transform: translateY(-50%);
-                                                  transform: translateY(-50%); color: grey">
-          <center><p><b>You don't have any new friend requests.<b><p><center>
+                                                  left: 50%;
+                                                  -ms-transform: translate(-50%, -50%);
+                                                  transform: translate(-50%, -50%); color: grey">
+          <p><b>You don't have any new friend requests.<b></p>
       </div>
     {{/if}}
 
@@ -85,14 +86,13 @@
         } catch(err) {
           this.$app.dialog.alert("Error " + err);
         }
-				console.log(friend_requests);
 
 				return { friend_requests: friend_requests.friendrequests,
                  requestslength: friend_requests.friendrequests.length };
       },
 
       methods: {
-          acceptfriend: function() {
+          acceptfriend: function(email) {
             var token = localStorage.getItem('token');
             const acceptfriendData = {
     						url: "http://localhost:3000/friendRequestReply",
@@ -102,11 +102,50 @@
     						"Content-Type": "application/json",
     						"Authorization": "Bearer " + token,
     				};
-            
-
+            fetch(acceptfriendData.url, {
+                    method: acceptfriendData.method,
+                    headers: headers,
+                    body: JSON.stringify({
+                        friend: email,
+                        accept: true,
+                    })
+                })
+                .then(res => res.json())
+                .then(res => {
+                    if (res.status == 200) {
+                        alert(res.state);
+                    } else {
+                      alert(res.error);
+                    }
+                })
           },
 
-          refusefriend: function(){
+          refusefriend: function(email){
+            var token = localStorage.getItem('token');
+            const refusefriendData = {
+    						url: "http://localhost:3000/friendRequestReply",
+    						method: "POST"
+    				};
+            headers = {
+    						"Content-Type": "application/json",
+    						"Authorization": "Bearer " + token,
+    				};
+            fetch(refusefriendData.url, {
+                    method: refusefriendData.method,
+                    headers: headers,
+                    body: JSON.stringify({
+                        friend: email,
+                        accept: false,
+                    })
+                })
+                .then(res => res.json())
+                .then(res => {
+                    if (res.status == 200) {
+                        alert(res.state);
+                    } else {
+                      alert(res.error);
+                    }
+                })
 
           },
       }

@@ -9,7 +9,7 @@ var findUser = require('../database/find/UserFind');
 
 
 
-// 
+//
 async function infosAreValid(req, db_collection) {
     var er = "";
     var email = req.body.email;
@@ -21,18 +21,17 @@ async function infosAreValid(req, db_collection) {
     var password = req.body.password;
     const query1 = await findUser.getUserByEmail(email);
     const query2 = await findUser.getUserByPseudo(pseudo);
-    console.log(query1 != null);
 
 
     if (email == "" || first_name == "" || last_name == "" || birthday == "" || gender == "" || pseudo == "" || password == "") {
         er += "Please, fill in the form proprely. \n"
     }
     if (query1 != null) {
-        er += "sorry this email is already taken \n"
+        er += "Sorry, this email is already taken \n"
 
     }
     if (query2 != null) {
-        er += "sorry this pseudo is already taken \n"
+        er += "Sorry, this pseudo is already taken \n"
 
     }
     if (er != "") {
@@ -55,23 +54,19 @@ exports.addUser = async function(req, res, db_collection) {
             db_collection.insertOne(user)
         })
 
-        res.status(200).json({ state: 'account created', status: 200 });
+        res.status(200).json({ state: 'Your account has been created', status: 200 });
     } else {
         res.status(400).json({ error: valid, status: 400 })
     }
 }
 
 exports.connectUser = function(req, res, db_collection) {
-    // Param 
-    console.log(ObjectID);
+    // Param
     var email = req.body.email;
     var password = req.body.password;
     var model = userModel.user_model();
     var query = db_collection.findOne({ email: email }, function(err, user) {
-        console.log(user);
         if (user) {
-            console.log(password);
-            console.log(user.password);
             bcrypt.compare(password, user.password, function(errBcrypt, resBcrypt) {
 
                 if (resBcrypt) {
@@ -92,14 +87,12 @@ exports.connectUser = function(req, res, db_collection) {
 }
 
 exports.isConnect = function(req, res) {
-    //Getting auth header 
+    //Getting auth header
     var headerAuth = req.headers.authorization;
-    console.log(req.headers.authorization)
     var userId = jwtUtils.getUserId(headerAuth);
 
     //Test if already connected
     if (userId != -1) {
-        console.log('token id ok');
         return res.status(200).json({
             'state': 'connected, token valid'
         })
@@ -122,10 +115,7 @@ exports.deleteUser = function(req, res, db_collection) {
 
 async function existUser(email, db_collection) {
 
-
-    console.log(user);
     if (user) {
-        console.log('ok');
         return 'true'
     } else return 'false';
 }

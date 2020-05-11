@@ -61,7 +61,6 @@ exports.addFriend = async function(req, res) {
     var headerAuth = req.headers.authorization;
     var userId = jwtUtils.getUserId(headerAuth);
     var friend = req.body.friend;
-    console.log('friend' + friend);
     const Friend = await findUser.getUserByEmail(friend);
     if (Friend != null) {
         if (userId != -1) {
@@ -70,7 +69,7 @@ exports.addFriend = async function(req, res) {
                 var friends = user.friends;
                 friends.forEach(element => {
                     if (element == friend) {
-                        return res.status(400).json({ error: friend + ' is already your friend', status: 400 })
+                        return res.status(400).json({ error: friend + ' is already your friend.', status: 400 })
                     }
 
                 });
@@ -82,7 +81,7 @@ exports.addFriend = async function(req, res) {
                 await up.updateUser(Friend._id, { friend_requests: send_request });
 
 
-                return res.status(200).json({ state: 'friend request for ' + friend + ' sent', status: 200 });
+                return res.status(200).json({ state: 'Friend request for ' + friend + ' sent.', status: 200 });
 
             } else
                 return res.status(403);
@@ -93,7 +92,7 @@ exports.addFriend = async function(req, res) {
 
         }
     } else {
-        return res.status(404).json({ error: friend + ' don\'t exist', status: 404 })
+        return res.status(404).json({ error: friend + ' does not exist.', status: 404 })
     }
 }
 
@@ -114,14 +113,16 @@ exports.friendRequestReply = async function(req, res) {
             if (accept) {
                 var userFriends = user.friends;
                 var friendFriends = Friend.friends;
-                userFriends.push({email: Friend.email});
-                friendFriends.push({email: user.email});
+                userFriends.push({email: Friend.email,
+                                  pseudo: Friend.pseudo});
+                friendFriends.push({email: user.email,
+                                    pseudo: user.pseudo});
                 userFriendRequests.forEach(function(element, index) {
-                    if (element == Friend.email)
+                    if (element.email == Friend.email)
                         userFriendRequests.splice(index, 1);
                 });
                 friendFriendPending.forEach(function(element, index) {
-                    if (element == user.email)
+                    if (element.email == user.email)
                         friendFriendPending.splice(index, 1);
                 });
                 await up.updateUser(userId, { friends: userFriends, friend_requests: userFriendRequests });
@@ -130,16 +131,16 @@ exports.friendRequestReply = async function(req, res) {
                 return res.status(200).json({ state: friend + ' has been added to your friends.', status: 200 })
             } else {
                 userFriendRequests.forEach(function(element, index) {
-                    if (element == Friend.email)
+                    if (element.email == Friend.email)
                         userFriendRequests.splice(index, 1);
                 });
                 friendFriendPending.forEach(function(element, index) {
-                    if (element == Friend.email)
+                    if (element.email == user.email)
                         friendFriendPending.splice(index, 1);
                 });
                 await up.updateUser(userId, { friend_requests: userFriendRequests });
                 await up.updateUser(Friend._id, { friend_pending: friendFriendPending });
-                return res.status(200).json({ state: 'demande de ' + friend + ' refusée ', status: 200 });
+                return res.status(200).json({ state: 'Friend request from ' + friend + ' rejected.', status: 200 });
 
             }
 

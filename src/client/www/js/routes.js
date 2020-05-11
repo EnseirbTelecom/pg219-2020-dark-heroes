@@ -5,15 +5,13 @@ var routes = [{
     {
         path: '/loading',
         redirect: async function(route, resolve, reject) {
-            console.log('test');
             const connected = await isAlreadyConnected();
-            console.log(connected);
 
             // if we have "user" query parameter
             if (connected) {
                 // redirect to such url
                 app.dialog.confirm(
-                    'an account is already connected, do you want to continue?',
+                    'An account is already connected, do you want to continue?',
                     function() {
                         // go to main
                         resolve('/main');
@@ -26,7 +24,6 @@ var routes = [{
             }
             // otherwise do nothing
             else {
-                console.log('okokokk')
                 resolve('/');
             }
         },
@@ -84,7 +81,6 @@ async function isAlreadyConnected() {
         })
         const status = await res.status;
         if (status == 200) {
-            console.log(true)
             return (true); // si le token existe et est valide
         } else {
             return (false); // token existe mais n'est plus valable
