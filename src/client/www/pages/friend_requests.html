@@ -1,0 +1,115 @@
+<template>
+	<div class="page">
+	  <div class="page-content">
+
+      <div class="navbar color-theme-black">
+        <div class="navbar-bg"></div>
+        <div class="navbar-inner sliding">
+          <div class="left">
+            <a class="link back">
+              <i class="icon icon-back"></i>
+              <span class="if-not-md">Back</span>
+            </a>
+          </div>
+          <div class="right">
+            <a class="link icon-only">
+              <i class="icon material-icons md-only">group_add<span class="badge color-red md-only">{{requestslength}}</span></i>
+							<i class="icon f7-icons if-not-md">person_2_square_stack<span class="badge color-red if-not-md">{{requestslength}}</span></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      {{#if requestslength}}
+      <div class="list sortable">
+        <ul>
+          {{#each friend_requests}}
+          <li>
+            <div class="card card-outline">
+              <div class="card-header text-color-deeporange">
+                <i class="icon material-icons md-only">control_point</i>
+  							<i class="icon f7-icons if-not-md">plus_circle</i>
+                <b>New Friend Request</b>
+              </div>
+              <div class="card-content card-content-padding">
+                <b>Email : </b>{{email}}<br><br>
+                <b>Pseudo : </b>{{pseudo}}
+              </div>
+              <div class="card-footer">
+                <button @click="acceptfriend" class="button button-round button-active color-green"><center>Accept</center></button>
+                <button @click="refusefriend" class="button button-round color-red"><center>Refuse</center></button>
+              </div>
+            </div>
+          </li>
+          {{/each}}
+        </ul>
+      </div>
+      {{else}}
+      <div class="item-title item-label" style = "font-size: 12pt;
+                                                  margin: 0;
+                                                  position: absolute;
+                                                  top: 50%;
+                                                  -ms-transform: translateY(-50%);
+                                                  transform: translateY(-50%); color: grey">
+          <center><p><b>You don't have any new friend requests.<b><p><center>
+      </div>
+    {{/if}}
+
+    </div>
+  </div>
+</template>
+<script>
+    return {
+      async data() {
+				var token = localStorage.getItem('token');
+
+				const friendrequestsData = {
+						url: "http://localhost:3000/friendrequests",
+						method: "GET"
+				};
+
+				headers = {
+						"Content-Type": "application/json",
+						"Authorization": "Bearer " + token,
+				}
+
+				let friend_requests;
+				var requestslength;
+
+				try {
+          friend_requests = await fetch(friendrequestsData.url, {
+																		method: friendrequestsData.method,
+																		headers: headers,
+																	})
+            .then(res => res.json());
+        } catch(err) {
+          this.$app.dialog.alert("Error " + err);
+        }
+				console.log(friend_requests);
+
+				return { friend_requests: friend_requests.friendrequests,
+                 requestslength: friend_requests.friendrequests.length };
+      },
+
+      methods: {
+          acceptfriend: function() {
+            var token = localStorage.getItem('token');
+            const acceptfriendData = {
+    						url: "http://localhost:3000/friendRequestReply",
+    						method: "POST"
+    				};
+            headers = {
+    						"Content-Type": "application/json",
+    						"Authorization": "Bearer " + token,
+    				};
+            
+
+          },
+
+          refusefriend: function(){
+
+          },
+      }
+
+    }
+</script>

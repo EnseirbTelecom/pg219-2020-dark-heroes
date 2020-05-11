@@ -19,6 +19,24 @@
           </div>
         </div>
       </div>
+
+			<div class="toolbar color-theme-black">
+		    <div class="toolbar-inner">
+					<div class="title margin-left" style = "font-size: 12pt;
+	                                              font-family: cursive;
+	                                              color: black;">
+						<a class="link icon-only" href="/friend_requests" >
+							Friend requests
+						</a>
+					</div>
+					<a class="link icon-only" href="/friend_requests">
+						<i class="icon material-icons md-only">keyboard_arrow_right<span class="badge color-red">{{requestslength}}</span></i>
+						<i class="icon f7-icons if-not-md">arrow_right_circle<span class="badge color-red">{{requestslength}}</span></i>
+					</a>
+		    </div>
+		  </div>
+
+			{{#if length}}
 			<div class="list sortable">
 	      <ul>
 					{{#each friend_list}}
@@ -39,6 +57,16 @@
 					{{/each}}
 	      </ul>
 	    </div>
+			{{else}}
+				<div class="item-title item-label" style = "font-size: 12pt;
+																										margin: 0;
+																									  position: absolute;
+																									  top: 50%;
+																									  -ms-transform: translateY(-50%);
+																									  transform: translateY(-50%); color: grey">
+						<center><p><b>Your friends list is empty. Please, add new friends.<b><p><center>
+				</div>
+			{{/if}}
 
 
     </div>
@@ -47,16 +75,51 @@
 <script>
     return {
       async data() {
-        let friend_list = [];
+				var token = localStorage.getItem('token');
+
+				const friendlistData = {
+						url: "http://localhost:3000/friends",
+						method: "GET"
+				};
+				const friendrequestsData = {
+						url: "http://localhost:3000/friendrequests",
+						method: "GET"
+				};
+
+				headers = {
+						"Content-Type": "application/json",
+						"Authorization": "Bearer " + token,
+				}
+
+        let friend_list;
+				let friend_requests;
         var length;
-        try {
-          friend_list = await fetch("http://localhost:3000/Users_GET")
+				var requestslength;
+
+				try {
+          friend_list = await fetch(friendlistData.url, {
+																		method: friendlistData.method,
+																		headers: headers,
+																	})
             .then(res => res.json());
         } catch(err) {
           this.$app.dialog.alert("Error " + err);
         }
-        return { friend_list: friend_list,
-                 length: friend_list.length };
+
+				try {
+          friend_requests = await fetch(friendrequestsData.url, {
+																		method: friendrequestsData.method,
+																		headers: headers,
+																	})
+            .then(res => res.json());
+        } catch(err) {
+          this.$app.dialog.alert("Error " + err);
+        }
+				console.log(friend_requests);
+				return { friend_list: friend_list.friendlist,
+                 length: friend_list.friendlist.length,
+							   requestslength: friend_requests.friendrequests.length };
       },
+
     }
 </script>

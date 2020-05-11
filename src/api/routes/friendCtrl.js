@@ -15,7 +15,7 @@ var collection = db.collection('UserCollection');
 //exports
 
 exports.getFriends = async function(req, res) {
-    //Getting auth header 
+    //Getting auth header
     var headerAuth = req.headers.authorization;
     var userId = jwtUtils.getUserId(headerAuth);
 
@@ -35,8 +35,29 @@ exports.getFriends = async function(req, res) {
 
 };
 
+exports.getFriendrequests = async function(req, res) {
+    //Getting auth header
+    var headerAuth = req.headers.authorization;
+    var userId = jwtUtils.getUserId(headerAuth);
+
+    if (userId != -1) {
+        user = await findUser.getUserByID(userId);
+        if (user != null) {
+            return res.status(200).json({ friendrequests: user.friend_requests, status: 200 })
+
+        } else
+            return res.status(404);
+
+
+    } else {
+        return res.status(403);
+
+    }
+
+};
+
 exports.addFriend = async function(req, res) {
-    //Getting auth header 
+    //Getting auth header
     var headerAuth = req.headers.authorization;
     var userId = jwtUtils.getUserId(headerAuth);
     var friend = req.body.friend;
@@ -55,13 +76,13 @@ exports.addFriend = async function(req, res) {
                 });
                 var friend_pending = user.friend_pending;
                 var send_request = Friend.friend_requests;
-                friend_pending.push(friend);
-                send_request.push(user.email);
+                friend_pending.push({pseudo: Friend.pseudo, email: friend});
+                send_request.push({pseudo: user.pseudo, email: user.email });
                 await up.updateUser(userId, { friend_pending: friend_pending });
                 await up.updateUser(Friend._id, { friend_requests: send_request });
 
 
-                return res.status(200).json({ state: 'friend request for ' + Friend.email + ' sent', status: 200 });
+                return res.status(200).json({ state: 'friend request for ' + friend + ' sent', status: 200 });
 
             } else
                 return res.status(403);
@@ -77,7 +98,7 @@ exports.addFriend = async function(req, res) {
 }
 
 exports.friendRequestReply = async function(req, res) {
-    //Getting auth header 
+    //Getting auth header
     var headerAuth = req.headers.authorization;
     var userId = jwtUtils.getUserId(headerAuth);
     var friend = req.body.friend;
@@ -93,8 +114,8 @@ exports.friendRequestReply = async function(req, res) {
             if (accept) {
                 var userFriends = user.friends;
                 var friendFriends = Friend.friends;
-                userFriends.push(Friend.email);
-                friendFriends.push(user.email);
+                userFriends.push({email: Friend.email});
+                friendFriends.push({email: user.email});
                 userFriendRequests.forEach(function(element, index) {
                     if (element == Friend.email)
                         userFriendRequests.splice(index, 1);
@@ -106,7 +127,7 @@ exports.friendRequestReply = async function(req, res) {
                 await up.updateUser(userId, { friends: userFriends, friend_requests: userFriendRequests });
                 await up.updateUser(Friend._id, { friends: friendFriends, friend_pending: friendFriendPending });
 
-                return res.status(200).json({ state: friend + ' ajouté aux amis ', status: 200 })
+                return res.status(200).json({ state: friend + ' has been added to your friends.', status: 200 })
             } else {
                 userFriendRequests.forEach(function(element, index) {
                     if (element == Friend.email)

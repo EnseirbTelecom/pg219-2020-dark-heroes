@@ -44,6 +44,10 @@ var routes = [{
         componentUrl: '../pages/friend_list.html',
     },
     {
+        path: '/friend_requests',
+        componentUrl: '../pages/friend_requests.html',
+    },
+    {
         path: '/friend',
         componentUrl: '../pages/friend.html',
     },

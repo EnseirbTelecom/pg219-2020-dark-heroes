@@ -59,8 +59,10 @@ server.post("/isConnect", (req, res) => {
 });
 //friend
 server.get("/friends", (req, res) => {
-    console.log("okok")
     friends.getFriends(req, res);
+});
+server.get("/friendrequests", (req, res) => {
+    friends.getFriendrequests(req, res);
 });
 server.post("/addFriend", (req, res) => {
     //send a friend request

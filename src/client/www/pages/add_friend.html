@@ -32,16 +32,16 @@
           <li>
             <div class="item-content item-input">
               <div class="item-inner">
-                <div class="item-title item-label" style = "font-size: 12pt;"><center><p><b>You can add a friend by his pseudo.<b><p><center></div>
+                <div class="item-title item-label" style = "font-size: 12pt;"><center><p><b>You can add a friend by his email.<b><p><center></div>
                 <div class="item-input-wrap">
-                  <input type="text" name="name" placeholder="Enter your friend's pseudo">
+                  <input id="pseudo" type="text" placeholder="Enter your friend's email">
                 </div>
               </div>
             </div>
           </li>
         </ul>
       </form>
-        <div class="col"><a class="button convert-form-to-data" href="#">Submit</a></div>
+        <div class="col"><a @click="addfriend" class="button convert-form-to-data" href="#">Submit</a></div>
 
 
 
@@ -50,3 +50,48 @@
     </div>
   </div>
 </template>
+<script>
+    return {
+        methods: {
+
+            addfriend: function() {
+                const pseudo = document.querySelector('#pseudo').value;
+                const queryData = this.friend_request();
+								var token = localStorage.getItem('token');
+
+								headers = {
+										"Content-Type": "application/json",
+										"Authorization": "Bearer " + token,
+								}
+
+                fetch(queryData.url, {
+                        method: queryData.method,
+                        headers: headers,
+
+                        body: JSON.stringify({
+                            friend: pseudo,
+                        })
+                    })
+                    .then(res => res.json())
+										.then(res => {
+												console.log(res);
+												if (res.status == 200) {
+														alert(res.state);
+												} else {
+														alert(res.error);
+												}
+										})
+                    .catch(err => this.$app.dialog.alert('Error ' + err))
+
+            },
+
+            friend_request: function() {
+                return {
+                    url: "http://localhost:3000/addFriend",
+                    method: "POST"
+                }
+            },
+
+        },
+    }
+</script>
