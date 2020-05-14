@@ -1,6 +1,7 @@
 <template>
 	<div class="page">
 	  <div class="page-content">
+          
       <div class="navbar color-theme-teal">
         <div class="navbar-bg"></div>
         <div class="navbar-inner sliding">
@@ -57,12 +58,12 @@
             addfriend: function() {
                 const pseudo = document.querySelector('#pseudo').value;
                 const queryData = this.friend_request();
-								var token = localStorage.getItem('token');
+                var token = localStorage.getItem('token');
 
-								headers = {
-										"Content-Type": "application/json",
-										"Authorization": "Bearer " + token,
-								}
+                headers = {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token,
+                }
 
                 fetch(queryData.url, {
                         method: queryData.method,
@@ -73,13 +74,13 @@
                         })
                     })
                     .then(res => res.json())
-										.then(res => {
-												if (res.status == 200) {
-														alert(res.state);
-												} else {
-														alert(res.error);
-												}
-										})
+                    .then(res => {
+                        if (res.status == 200) {
+                            alert(res.state);
+                        } else {
+                            alert(res.error);
+                        }
+                    })
                     .catch(err => this.$app.dialog.alert('Error ' + err))
 
             },

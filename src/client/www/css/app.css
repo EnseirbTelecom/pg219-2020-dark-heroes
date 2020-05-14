@@ -1,6 +1,14 @@
 /* iOS Cordova Tweak */
+
 .device-cordova.device-ios {
-  height: 100vh;
+    height: 100vh;
 }
 
+
 /* Your app custom styles here */
+
+#mapid {
+    display: block;
+    width: 100%;
+    height: 100%;
+}

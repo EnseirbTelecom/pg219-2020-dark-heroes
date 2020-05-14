@@ -8,6 +8,7 @@ var up = require('../database/update/userUpdate');
 var upPos = require('../database/update/updatePosition');
 var positionModel = require('../database/model/Position_model');
 var findPosition = require('../database/find/PositionFind');
+var del = require('../database/delete');
 
 
 // function

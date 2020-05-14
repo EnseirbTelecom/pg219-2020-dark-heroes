@@ -28,6 +28,10 @@
           </a>
         </div>
       </div>
+
+    </div>
+    <div class="page-content">
+      <div id="mapid"></div>
     </div>
     <div class="toolbar tabbar tabbar-labels toolbar-bottom color-white">
       <div class="toolbar-inner">
@@ -58,4 +62,42 @@
       </div>
     </div>
   </div>
+
 </template>
+<script>
+    return {
+        on: {
+            pageInit: function(e, page) {
+                console.log('in function');
+                try {
+                    var map = L.map('mapid').fitWorld(); // LIGNE 18
+
+                    var osmLayer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', { // LIGNE 20
+                        attribution: '© OpenStreetMap contributors',
+                        maxZoom: 19
+                    });
+
+                    map.addLayer(osmLayer);
+                    map.locate({
+                        setView: true,
+                        maxZoom: 16
+                    });
+
+                    function onLocationFound(e) {
+                        var radius = e.accuracy;
+
+                        L.marker(e.latlng).addTo(map)
+                            .bindPopup("You are within " + radius + " meters from this point").openPopup();
+
+                        L.circle(e.latlng, radius).addTo(map);
+                    }
+
+                    map.on('locationfound', onLocationFound);
+                } catch (error) {}
+                console.log(error);
+            }
+
+        }
+
+    }
+</script>
