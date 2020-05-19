@@ -63,6 +63,9 @@ server.get("/friends", (req, res) => {
 server.get("/friendrequests", (req, res) => {
     friends.getFriendrequests(req, res);
 });
+server.delete("/friend", (req, res) => {
+    friends.deletefriend(req, res);
+});
 server.post("/addFriend", (req, res) => {
     //send a friend request
     friends.addFriend(req, res);

@@ -114,9 +114,17 @@ exports.friendRequestReply = async function(req, res) {
                 var userFriends = user.friends;
                 var friendFriends = Friend.friends;
                 userFriends.push({email: Friend.email,
-                                  pseudo: Friend.pseudo});
+                                  pseudo: Friend.pseudo,
+                                  first_name: Friend.first_name,
+                                  last_name:  Friend.last_name,
+                                  birthday: Friend.birthday,
+                                  gender: Friend.gender});
                 friendFriends.push({email: user.email,
-                                    pseudo: user.pseudo});
+                                    pseudo: user.pseudo,
+                                    first_name: user.first_name,
+                                    last_name:  user.last_name,
+                                    birthday: user.birthday,
+                                    gender: user.gender});
                 userFriendRequests.forEach(function(element, index) {
                     if (element.email == Friend.email)
                         userFriendRequests.splice(index, 1);
@@ -151,5 +159,40 @@ exports.friendRequestReply = async function(req, res) {
     } else {
         return res.status(403);
 
+    }
+}
+
+exports.deletefriend = async function(req, res) {
+    //Getting auth header
+    var headerAuth = req.headers.authorization;
+    var userId = jwtUtils.getUserId(headerAuth);
+    var friend = req.body.friend;
+    const Friend = await findUser.getUserByEmail(friend);
+    if (Friend != null) {
+        if (userId != -1) {
+            user = await findUser.getUserByID(userId);
+            if (user != null) {
+                var userfriends = user.friends;
+                var friendfriends = Friend.friends;
+
+                userfriends.forEach(function(element, index) {
+                    if (element.email == Friend.email)
+                        userfriends.splice(index, 1);
+                });
+                friendfriends.forEach(function(element, index) {
+                    if (element.email == user.email)
+                        friendfriends.splice(index, 1);
+                });
+                await up.updateUser(userId, { friends: userfriends });
+                await up.updateUser(Friend._id, { friends: friendfriends });
+                return res.status(200).json({ state: friend + ' has been removed.', status: 200 })
+            } else
+                return res.status(403);
+
+        } else {
+            return res.status(403);
+        }
+    } else {
+        return res.status(404).json({ error: friend + ' does not exist.', status: 404 })
     }
 }

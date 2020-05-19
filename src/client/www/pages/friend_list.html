@@ -47,15 +47,15 @@
 								<i class="icon material-icons md-only color-deeppurple">person_outline</i>
 							</div>
 	            <div class="item-inner">
-								<a href="#tab" class="link">
-	              	<div class="item-title" style = "text-transform:capitalize; font-family: cursive; color: black">{{email}}</div>
+								<a @click="friendinfos(friend_list,'{{email}}')" class="button popup-open" href="#" data-popup=".popup-about">
+	              	<div class="item-title" style = "text-transform:capitalize; font-family: cursive; font-size: 15px; color: black">{{email}}</div>
 								</a>
 	            </div>
 	          </div>
 	          <div class="sortable-handler"></div>
 	        </li>
 					{{/each}}
-	      </ul>
+				</ul>
 	    </div>
 			{{else}}
 				<div class="item-title item-label" style = "font-size: 12pt;
@@ -69,11 +69,41 @@
 				</div>
 			{{/if}}
 
+			<div class="popup popup-about">
+					<div class="navbar color-theme-deeporange">
+						<div class="navbar-bg"></div>
+						<div class="navbar-inner sliding">
+							<div class="left">
+								<a class="link popup-close" href="#">
+									<i class="icon icon-back"></i>
+									<span class="if-not-md">Back</span>
+								</a>
+							</div>
+						</div>
+					</div>
+
+					<center>
+					<div class="card card-outline">
+						<div class="card-header text-color-deeporange">
+							<b>Friend Infos</b>
+							<i class="icon material-icons md-only">description</i>
+							<i class="icon f7-icons if-not-md">doc_fill</i>
+						</div>
+						<div class="card-content card-content-padding">
+							<p id='friendinfos'><p>
+						</div>
+						<div class="card-footer">
+							<button @click="deletefriend" class="button button-round button-active color-red"><center>Delete Friend</center></button>
+						</div>
+					</div>
+					</center>
+			</div>
 
     </div>
   </div>
 </template>
 <script>
+	var infosfriend;
     return {
       async data() {
 				var token = localStorage.getItem('token');
@@ -120,6 +150,46 @@
                  length: friend_list.friendlist.length,
 							   requestslength: friend_requests.friendrequests.length };
       },
-
+			methods: {
+          friendinfos: function(friend_list,email) {
+						friend_list.forEach(function(element) {
+								if (element.email === email){
+									infosfriend = element;
+								}
+						});
+						document.getElementById("friendinfos").innerHTML = 'First name : '.bold() + infosfriend.first_name + "<br>" +
+																															 'Last name : '.bold() + infosfriend.last_name + "<br>" +
+																															 'Email : '.bold() + infosfriend.email + "<br>" +
+																															 'Pseudo : '.bold() + infosfriend.pseudo + "<br>" +
+																															 'Birthday : '.bold() + infosfriend.birthday + "<br>" +
+																															 'Gender : '.bold() + infosfriend.gender;
+          },
+					deletefriend: function(){
+						var token = localStorage.getItem('token');
+						const friendData = {
+								url: "http://localhost:3000/friend",
+								method: "DELETE"
+						};
+						headers = {
+								"Content-Type": "application/json",
+								"Authorization": "Bearer " + token,
+						};
+						fetch(friendData.url, {
+                    method: friendData.method,
+                    headers: headers,
+                    body: JSON.stringify({
+                        friend: infosfriend.email,
+                    })
+                })
+                .then(res => res.json())
+								.then(res => {
+										if (res.status == 200) {
+												alert(res.state);
+										} else {
+												alert(res.error);
+										}
+								})
+					}
+			}
     }
 </script>
