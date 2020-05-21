@@ -33,6 +33,35 @@
         //     mapsPlaceholder.push(this); // Use whatever global scope variable you like.
         // });
         var map;
+        var currentPos;
+        var mapInit;
+        var myIcon = L.icon({
+            iconUrl: './img/people.png',
+            iconSize: [45, 45]
+
+        });
+
+        function mapReset() {
+            var osmLayer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', { // LIGNE 20
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 19
+            });
+            map.eachLayer(function(layer) {
+                map.removeLayer(layer);
+            });
+            map.addLayer(osmLayer);
+            map.setView([46.3630104, 2.9846608], 6);
+            return map;
+
+
+        }
+
+        // onError Callback receives a PositionError object
+        //
+        function onGeolocError(error) {
+            alert('code: ' + error.code + '\n' +
+                'message: ' + error.message + '\n');
+        }
     </script>
     <!-- App scripts -->
     <script src="js/app.js"></script>

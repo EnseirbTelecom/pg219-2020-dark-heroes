@@ -11,6 +11,7 @@ var collection = db.collection('PositionCollection');
 
 exports.findPositionByEmail = async function(email) {
     const position = await collection.findOne({ email: email });
+    console.log(position);
     return position;
 }
 

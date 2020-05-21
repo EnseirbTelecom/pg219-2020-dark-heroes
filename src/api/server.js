@@ -89,6 +89,10 @@ server.get("/currFriendsPosition", (req, res) => {
     positions.getFriendsCurrentPosition(req, res);
 });
 
+server.get("/myCurrPosition", (req, res) => {
+    positions.getMyCurrentPosition(req, res);
+});
+
 //Sauvegarder current position (marche si la durée + la date d'activation est inférieur a la date actuelle)
 
 server.post("/savePos", (req, res) => {

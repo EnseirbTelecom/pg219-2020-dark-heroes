@@ -38,7 +38,7 @@ exports.getHistPosition = async function(req, res) {
             return res.status(200).json({ hist_positions: user.hist_positions, status: 200 })
 
         } else
-            return res.status(404);
+            return res.status(200).json({ hist_positions: user.hist_positions, status: 200 })
 
 
     } else {
@@ -48,26 +48,25 @@ exports.getHistPosition = async function(req, res) {
 
 };
 
-exports.getmyCurrentPosition = async function(req, res) {
+exports.getMyCurrentPosition = async function(req, res) {
     //Getting auth header 
     var headerAuth = req.headers.authorization;
     var userId = jwtUtils.getUserId(headerAuth);
-
     if (userId != -1) {
         const user = await findUser.getUserByID(userId);
         const position = await findPosition.findPositionByEmail(user.email);
         if (user != null) {
-            if (position) {
+            if (position != null) {
                 return res.status(200).json({ position: position, status: 200 });
             } else {
-                return (res.status(201));
+                return res.status(201).json({ status: 201, state: 'you don\'t post current position' });
             }
         } else
-            return res.status(404);
+            return res.status(404).json({ status: 404 });
 
 
     } else {
-        return res.status(403);
+        return res.status(403).json({ status: 403 });
 
     }
 
@@ -78,7 +77,6 @@ exports.getCurrentPosition = async function(req, res) {
     var headerAuth = req.headers.authorization;
     var userId = jwtUtils.getUserId(headerAuth);
     var email = req.body.email;
-    console.log(email);
     if (userId != -1) {
         const position = await findPosition.findPositionByEmail(email);
         console.log(position);
@@ -86,13 +84,13 @@ exports.getCurrentPosition = async function(req, res) {
         if (position != null) {
             return res.status(200).json({ position: position, status: 200 });
         } else {
-            return (res.status(201));
+            return (res.status(201).json({ status: 201 }));
         }
 
 
 
     } else {
-        return res.status(403);
+        return res.status(403).json({ status: 403 });
 
     }
 
@@ -151,30 +149,38 @@ exports.deletePosition = async function(req, res) {
     var headerAuth = req.headers.authorization;
     var userId = jwtUtils.getUserId(headerAuth);
     var date = new Date(req.body.date);
+    var current = req.body.current;
     var haveToUpdate = false;
     console.log(date)
     if (userId != -1) {
         user = await findUser.getUserByID(userId);
         if (user != null) {
-            var hist_positions = user.hist_positions;
-
-            hist_positions.forEach(function(element, index) {
-                if (element.hist_date.getTime() === date.getTime()) {
-                    hist_positions.splice(index, 1);
-                    haveToUpdate = true;
-
-
-
-                }
-            });
-            if (haveToUpdate) {
-                await up.updateUser(userId, { hist_positions: hist_positions });
+            if (current) {
+                await del.deletePositionByEmail(user.email);
                 return res.status(200).json({ state: 'element deleted', status: 200 });
-            }
 
-            return res.status(200).json({ state: 'No element to delete', status: 200 });
-        } else
+            } else {
+                var hist_positions = user.hist_positions;
+
+                hist_positions.forEach(function(element, index) {
+                    if (new Date(element.hist_date).getTime() === date.getTime()) {
+                        hist_positions.splice(index, 1);
+                        haveToUpdate = true;
+
+
+
+                    }
+                });
+                if (haveToUpdate) {
+                    await up.updateUser(userId, { hist_positions: hist_positions });
+                    return res.status(200).json({ state: 'element deleted', status: 200 });
+                }
+
+                return res.status(200).json({ state: 'No element to delete', status: 200 });
+            }
+        } else {
             return res.status(403);
+        }
 
 
     } else {

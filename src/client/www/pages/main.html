@@ -13,11 +13,40 @@
               </a>
             </div>
 
-            <div class="chip-label text-color-black">SHARE</div>
+            <div class="chip-label text-color-black">SHARE YOUR POS</div>
 
 
 
           </div>
+          <div class="link chip margin-left" @click="friendPos">
+
+            <div class="chip-media bg-color-lime">
+              <a class="icon-only color-black ">
+                <i class="icon f7-icons if-not-md">placemark_fill</i>
+                <i class="icon material-icons md-only">map-pin</i> 
+              </a>
+            </div> 
+
+             <div class="chip-label text-color-black">GET FRIENDS POSITIONS</div>
+
+
+
+          </div>
+          
+          <div class=" link chip margin-left" @click="histPos">
+
+            <div class="chip-media bg-color-lime">
+              <a class="icon-only color-black ">
+                <i class="icon f7-icons if-not-md">placemark_fill</i>
+                <i class="icon material-icons md-only">map-pin</i> 
+              </a>
+            </div>
+
+            <div class="chip-label text-color-black">GET History Pos</div>
+
+
+
+          </div> 
         </div>
         <div class="title padding-left" style = "width: 357;
                                               font-size: 17pt;
@@ -37,7 +66,7 @@
     </div>
 
     <div class=" page-content">
-    <div class="col-50" id="mapid"></div>
+    <div id="mapid"></div>
     </div>
     <div class="toolbar tabbar tabbar-labels toolbar-bottom color-white">
       <div class="toolbar-inner">
@@ -74,41 +103,151 @@
     return {
         methods: {
 
-            shareMyPos: function() {
-                var osmLayer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', { // LIGNE 20
-                    attribution: '© OpenStreetMap contributors',
-                    maxZoom: 19
+            shareMyPos: async function() {
+                mapReset();
+                // //map know current positions
+                var token = localStorage.getItem("token");
+                var data = {
+                    url: "http://localhost:3000/myCurrPosition",
+                    method: "GET"
+                }
+                headers = {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token,
+                };
+                fetch(data.url, {
+                        method: data.method,
+                        headers: headers
+                    })
+                    .then(res => res.json())
+                    .then(res => {
+                        if (res.status == 200) {
+                            L.marker({
+                                lat: res.position.lat,
+                                lng: res.position.long
+                            }, {
+                                icon: myIcon
+                            }).addTo(map)
+
+                            .bindPopup(
+                                "date : " + new Date(res.position.date) + "<br>" + "message : " +
+                                res.position.message + "<br>" + "expire in " + res.position.time + " min" + "<br>" +
+                                "<a class='button' id='delPos' > delete this position </a></div>"
+                            ).openPopup();
+                            var buttonSubmit = L.DomUtil.get('delPos');
+                            L.DomEvent.addListener(buttonSubmit, 'click', function(e) {
+                                console.log('del');
+                                var token = localStorage.getItem("token");
+                                var data = {
+                                    url: "http://localhost:3000/delPos",
+                                    method: "Delete"
+                                };
+                                headers = {
+                                    "Content-Type": "application/json",
+                                    "Authorization": "Bearer " + token,
+                                };
+                                fetch(data.url, {
+                                        method: data.method,
+                                        headers: headers,
+                                        body: JSON.stringify({
+                                            date: res.position.date,
+                                            current: true
+
+                                        })
+                                    })
+                                    .then(res => res.json())
+                                    .then(res => {
+                                        if (res.status == 200) {
+                                            alert(res.state);
+                                        }
+                                    })
+                            });
+
+                        } else {
+                            map = mapReset();
+                            navigator.geolocation.getCurrentPosition(function(position) {
+                                currentPos = {
+                                    'lat': position.coords.latitude,
+                                    'lng': position.coords.longitude
+                                }
+                                L.marker(currentPos).addTo(map)
+                                    .bindPopup("<div class='text-center'>Set your post" +
+                                        "<br>" +
+                                        //"<div class='item-content item-input'> <div class='item-inner'> <div class='item-title item-label'>Sharing duration </div> <div class='item-input-wrap'> <input id='duration' type='time'  placeholder='Duration'> </div>" +
+                                        " expire in : <input id='expiration' type='time'> </input>" +
+                                        "<br>" +
+                                        "msg" +
+                                        "<br>" +
+                                        "<input id='msg' type='block'> </input>" +
+                                        "<br>" +
+                                        "<a class='button' id='postPos' > Post this position </a></div>").openPopup();
+                                var buttonSubmit = L.DomUtil.get('postPos');
+                                L.DomEvent.addListener(buttonSubmit, 'click', function(e) {
+                                    var time = document.querySelector('#expiration').value;
+                                    var msg = document.querySelector('#msg').value;
+                                    //map init with current positions
+                                    var token = localStorage.getItem("token");
+                                    var data = {
+                                        url: "http://localhost:3000/savePos",
+                                        method: "Post"
+                                    }
+                                    headers = {
+                                        "Content-Type": "application/json",
+                                        "Authorization": "Bearer " + token,
+                                    };
+                                    fetch(data.url, {
+                                            method: data.method,
+                                            headers: headers,
+                                            body: JSON.stringify({
+                                                lat: currentPos.lat,
+                                                long: currentPos.lng,
+                                                duration: time,
+                                                message: msg
+
+                                            })
+                                        })
+                                        .then(res => res.json())
+                                        .then(res => {
+                                            if (res.status == 200) {
+                                                alert(res.state);
+                                            }
+                                        })
+
+
+                                });
+                            }, onGeolocError);
+                        }
+                    })
+                    .catch(err => this.$app.dialog.alert('Error ' + err))
+
+
+            },
+            friendPos: function() {
+                this.$router.navigate("/profile");
+            },
+            histPos: function() {
+                this.$router.navigate("/profile")
+            },
+            plotCurrentFriendsPositions: function(friendsPosition) {
+                friendsPosition.forEach(element => {
+                    L.marker({
+                        lat: element.lat,
+                        lng: element.long
+                    }).addTo(map);
+
+
                 });
 
-                map.addLayer(osmLayer);
-                map.locate({
-                    setView: true,
-                    maxZoom: 16
-                });
-
-                function onLocationFound(e) {
-                    var radius = e.accuracy;
-                    console.log(e.latlng);
-
-                    L.marker(e.latlng).addTo(map)
-                        .bindPopup("You are within " + radius + " meters from this point").openPopup();
-
-                    //L.circle(e.latlng, radius).addTo(map);
-                }
-
-                map.on('locationfound', onLocationFound);
-
-                function onLocationError(e) {
-                    alert(e.message);
-                }
-
-                map.on('locationerror', onLocationError);
+            },
+            postPos: function() {
+                console.log("lol");
             }
 
         },
         on: {
             pageInit: function(e, page) {
-                map = L.map('mapid').fitWorld(); // LIGNE 18
+                map = L.map('mapid').setView([46.3630104, 2.9846608], 6);; // LIGNE 18
+                mapInit = map;
 
                 var osmLayer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', { // LIGNE 20
                     attribution: '© OpenStreetMap contributors',
@@ -116,11 +255,68 @@
                 });
 
                 map.addLayer(osmLayer);
-                map.locate({
-                    setView: true,
-                    maxZoom: 16
-                });
+
+                //map init with current positions
+                var token = localStorage.getItem("token");
+                var data = {
+                    url: "http://localhost:3000/currFriendsPosition",
+                    method: "GET"
+                }
+                headers = {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token,
+                };
+
+                fetch(data.url, {
+                        method: data.method,
+                        headers: headers
+                    })
+                    .then(res => res.json())
+                    .then(res => {
+                        if (res.status == 200) {
+                            plotCurrentFriendsPositions(res.friendsPosition)
+                        } else {
+                            alert(res.error);
+                        }
+                    })
+                    .catch(err => this.$app.dialog.alert('Error ' + err))
+
+                function plotCurrentFriendsPositions(friendsPosition) {
+                    friendsPosition.forEach(element => {
+                        L.marker({
+                                lat: element.lat,
+                                lng: element.long
+                            }, {
+                                icon: myIcon
+                            }).addTo(map)
+                            .bindPopup(
+                                "pseudo : " + element.pseudo + "<br>" + "email : " + element.email + "<br>" + "date : " + new Date(element.date) + "<br>" + "message : " +
+                                element.message
+                            );
+
+
+                    });
+                    map.locate();
+
+                    function onLocationFound(e) {
+                        var radius = e.accuracy;
+
+                        L.marker(e.latlng).addTo(map)
+                            .bindPopup("This is your current position").openPopup
+
+
+                        //L.circle(e.latlng, radius).addTo(map);
+                    }
+
+                    map.on('locationfound', onLocationFound);
+
+                    function onLocationError(e) {
+                        alert(e.message);
+                    }
+                    map.on('locationerror', onLocationError);
+                }
             }
+
 
         }
 

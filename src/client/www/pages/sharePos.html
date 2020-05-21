@@ -1,0 +1,166 @@
+<template>
+    <div class="page">
+      <div class="navbar">
+        <div class="navbar-bg"></div>
+        <div class="navbar-inner align-items-center">
+          <div class="left">
+            <div class=" link chip margin-left" @click="shareMyPos">
+  
+              <div class="chip-media bg-color-lime">
+                <a class="icon-only color-black ">
+                  <i class="icon f7-icons if-not-md">placemark_fill</i>
+                  <i class="icon material-icons md-only">location_on</i>
+                </a>
+              </div>
+  
+              <div class="chip-label text-color-black">SHARE YOUR POS</div>
+  
+  
+  
+            </div>
+            <div class="link chip margin-left" @click="friendPos">
+  
+              <div class="chip-media bg-color-lime">
+                <a class="icon-only color-black ">
+                  <i class="icon f7-icons if-not-md">placemark_fill</i>
+                  <i class="icon material-icons md-only">map-pin</i> 
+                </a>
+              </div> 
+  
+               <div class="chip-label text-color-black">GET FRIENDS POSITIONS</div>
+  
+  
+  
+            </div>
+            
+            <div class=" link chip margin-left" @click="histPos">
+  
+              <div class="chip-media bg-color-lime">
+                <a class="icon-only color-black ">
+                  <i class="icon f7-icons if-not-md">placemark_fill</i>
+                  <i class="icon material-icons md-only">map-pin</i> 
+                </a>
+              </div>
+  
+              <div class="chip-label text-color-black">GET History Pos</div>
+  
+  
+  
+            </div> 
+          </div>
+          <div class="title padding-left" style = "width: 357;
+                                                font-size: 17pt;
+                                                font-family: cursive;
+                                                color: black;
+                                                filter:drop-shadow(3px 3px 2px #000000);">
+            Friend Finder
+          </div>
+          <div class="right">
+            <a class="link icon-only color-red">
+              <i class="icon f7-icons if-not-md">escape</i>
+              <i class="icon material-icons md-only md-48">power_settings_new</i>
+            </a>
+          </div>
+        </div>
+  
+      </div>
+  
+      <div class=" page-content">
+      <div id="mapid"></div>
+      </div>
+      <div class="toolbar tabbar tabbar-labels toolbar-bottom color-white">
+        <div class="toolbar-inner">
+  
+        <a href="/profile" class="tab-link tab-link-active">
+          <i class="icon icon-fill f7-icons if-not-md color-black">person_alt_circle</i>
+          <i class="icon material-icons md-only color-black">person_alt_circle</i>
+          <span class="tabbar-label text-color-black">
+            <b>PROFILE</b>
+          </span>
+        </a>
+  
+        <a href="/add_friend" class="tab-link tab-link-active">
+          <i class="icon f7-icons if-not-md color-blue">plus_rectangle</i>
+          <i class="icon material-icons md-only color-blue">add_circle_outline</i>
+          <span class="tabbar-label text-color-blue">
+              <b>ADD A FRIEND</b>
+          </span>
+        </a>
+  
+        <a href="/friend_list" class="tab-link tab-link-active">
+          <i class="icon f7-icons if-not-md color-red">person_3_fill</i>
+          <i class="icon material-icons md-only color-red">people_outline</i>
+          <span class="tabbar-label text-color-red">
+            <b>FRIENDS LIST</b>
+          </span>
+        </a>
+        </div>
+      </div>
+    </div>
+  
+  </template>
+<script>
+    return {
+        methods: {
+
+            shareMyPos: function() {
+                this.$router.navigate("/sharePos");
+
+
+            },
+            friendPos: function() {
+                this.$router.navigate("/profile");
+            },
+            histPos: function() {
+                this.$router.navigate("/profile")
+            },
+            plotCurrentFriendsPositions: function(friendsPosition) {
+                friendsPosition.forEach(element => {
+                    L.marker({
+                        lat: element.lat,
+                        lng: element.long
+                    }).addTo(map);
+
+
+                });
+
+            }
+
+        },
+        on: {
+            pageInit: function(e, page) {
+                map = L.map('mapid').setView([46.3630104, 2.9846608], 6);; // LIGNE 18
+                mapInit = map;
+
+                var osmLayer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', { // LIGNE 20
+                    attribution: '© OpenStreetMap contributors',
+                    maxZoom: 19
+                });
+
+                map.addLayer(osmLayer);
+
+                map.locate();
+
+                function onLocationFound(e) {
+                    var radius = e.accuracy;
+
+                    L.marker(e.latlng).addTo(map)
+                        .bindPopup("This is your current position").openPopup
+
+
+                    //L.circle(e.latlng, radius).addTo(map);
+                }
+
+                map.on('locationfound', onLocationFound);
+
+                function onLocationError(e) {
+                    alert(e.message);
+                }
+                map.on('locationerror', onLocationError);
+            }
+        }
+
+
+    }
+
+    }
