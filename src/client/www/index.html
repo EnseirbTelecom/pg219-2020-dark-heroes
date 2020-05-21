@@ -33,8 +33,11 @@
         //     mapsPlaceholder.push(this); // Use whatever global scope variable you like.
         // });
         var map;
+        var map2;
+        var map3;
         var currentPos;
         var mapInit;
+        var actualize = false;
         var myIcon = L.icon({
             iconUrl: './img/people.png',
             iconSize: [45, 45]
@@ -52,6 +55,36 @@
             map.addLayer(osmLayer);
             map.setView([46.3630104, 2.9846608], 6);
             return map;
+
+
+        }
+
+        function map2Reset() {
+            var osmLayer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', { // LIGNE 20
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 19
+            });
+            map2.eachLayer(function(layer) {
+                map2.removeLayer(layer);
+            });
+            map2.addLayer(osmLayer);
+            map2.setView([46.3630104, 2.9846608], 6);
+            return map2;
+
+
+        }
+
+        function map3Reset() {
+            var osmLayer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', { // LIGNE 20
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 19
+            });
+            map3.eachLayer(function(layer) {
+                map3.removeLayer(layer);
+            });
+            map3.addLayer(osmLayer);
+            map3.setView([46.3630104, 2.9846608], 6);
+            return map3;
 
 
         }

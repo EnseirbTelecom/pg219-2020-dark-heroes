@@ -18,6 +18,20 @@
     height: 100%;
 }
 
+#mapid2 {
+    display: block;
+    position: right;
+    width: 100%;
+    height: 100%;
+}
+
+#mapid3 {
+    display: block;
+    position: right;
+    width: 100%;
+    height: 100%;
+}
+
 .popup {
     width: 100%;
     background-color: grey;
@@ -25,4 +39,13 @@
 
 .popup-table-row {
     background-color: grey;
+}
+
+.leafpop {
+    text-align: center;
+    display: inline-block;
+}
+
+.time {
+    position: center;
 }

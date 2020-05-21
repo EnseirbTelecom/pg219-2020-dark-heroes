@@ -56,6 +56,14 @@ var routes = [{
         path: '/profile',
         componentUrl: '../pages/profile.html',
     },
+    {
+        path: '/sharePos',
+        componentUrl: '../pages/sharePos.html',
+    },
+    {
+        path: '/histPos',
+        componentUrl: '../pages/historyPos.html',
+    },
     // Default route (404 page). MUST BE THE LAST
     {
         path: '(.*)',
