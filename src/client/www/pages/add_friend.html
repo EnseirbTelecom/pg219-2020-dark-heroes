@@ -44,11 +44,17 @@
       </form>
         <div class="col"><a @click="addfriend" class="button convert-form-to-data" href="#">Submit</a></div>
 
+        
+
 
 
 
 
     </div>
+
+    <div id="snackbar" >Friend request sent</div>
+    <div id="snackbar1" >Friend not found</div>
+
   </div>
 </template>
 <script>
@@ -56,6 +62,7 @@
         methods: {
 
             addfriend: function() {
+              
                 const pseudo = document.querySelector('#pseudo').value;
                 const queryData = this.friend_request();
                 var token = localStorage.getItem('token');
@@ -76,12 +83,17 @@
                     .then(res => res.json())
                     .then(res => {
                         if (res.status == 200) {
-                            alert(res.state);
+                          var x = document.getElementById("snackbar");
+                          x.className = "show";
+                          setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
                         } else {
-                            alert(res.error);
+                          var x = document.getElementById("snackbar1");
+                          x.className = "show";
+                          setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
                         }
                     })
                     .catch(err => this.$app.dialog.alert('Error ' + err))
+                    
 
             },
 

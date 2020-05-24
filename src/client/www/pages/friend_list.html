@@ -48,7 +48,7 @@
 							</div>
 	            <div class="item-inner">
 								<a @click="friendinfos(friend_list,'{{email}}')" class="button popup-open" href="#" data-popup=".popup-about">
-	              	<div class="item-title" style = "text-transform:capitalize; font-family: cursive; font-size: 15px; color: black">{{email}}</div>
+	              	<div class="item-title" style = "text-transform:capitalize; font-family: cursive; font-size: 15px; color: black">{{pseudo}}</div>
 								</a>
 	            </div>
 	          </div>
@@ -98,6 +98,8 @@
 					</div>
 					</center>
 			</div>
+
+			<div id="snackbar" >Friend deleted</div>
 
     </div>
   </div>
@@ -184,7 +186,12 @@
                 .then(res => res.json())
 								.then(res => {
 										if (res.status == 200) {
-												alert(res.state);
+											var x = document.getElementById("snackbar");
+                          					x.className = "show";
+											setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+											app.views.main.router.navigate("/friend_list", {
+                                        	reloadCurrent: true
+                                    });
 										} else {
 												alert(res.error);
 										}

@@ -56,7 +56,10 @@
       </div>
     {{/if}}
 
+   
     </div>
+    <div id="snackbar" >Friend added</div>
+    <div id="snackbar1" >Friend request denied</div>
   </div>
 </template>
 <script>
@@ -113,7 +116,12 @@
                 .then(res => res.json())
                 .then(res => {
                     if (res.status == 200) {
-                        alert(res.state);
+                      var x = document.getElementById("snackbar");
+                      x.className = "show";
+											setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+											app.views.main.router.navigate("/friend_requests", {
+                                        	reloadCurrent: true
+                                    });
                     } else {
                       alert(res.error);
                     }
@@ -141,7 +149,12 @@
                 .then(res => res.json())
                 .then(res => {
                     if (res.status == 200) {
-                        alert(res.state);
+                      var x = document.getElementById("snackbar1");
+                      x.className = "show";
+											setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+											app.views.main.router.navigate("/friend_requests", {
+                                        	reloadCurrent: true
+                                    });
                     } else {
                       alert(res.error);
                     }

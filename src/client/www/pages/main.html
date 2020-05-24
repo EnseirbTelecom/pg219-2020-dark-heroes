@@ -18,27 +18,13 @@
 
 
           </div>
-          <div class="link chip margin-left" @click="friendPos">
 
-            <div class="chip-media bg-color-lime">
-              <a class="icon-only color-black ">
-                <i class="icon f7-icons if-not-md">placemark_fill</i>
-                <i class="icon material-icons md-only">map-pin</i> 
-              </a>
-            </div> 
-
-             <div class="chip-label text-color-black">GET FRIENDS POSITIONS</div>
-
-
-
-          </div>
-          
           <div class=" link chip margin-left" @click="histPos">
 
             <div class="chip-media bg-color-lime">
               <a class="icon-only color-black ">
                 <i class="icon f7-icons if-not-md">placemark_fill</i>
-                <i class="icon material-icons md-only">map-pin</i> 
+                <i class="icon material-icons md-only">map-pin</i>
               </a>
             </div>
 
@@ -46,9 +32,9 @@
 
 
 
-          </div> 
+          </div>
         </div>
-        <div class="title padding-left" style = "width: 357;
+        <div class="title padding-left" style="width: 357;
                                               font-size: 17pt;
                                               font-family: cursive;
                                               color: black;
@@ -56,7 +42,7 @@
           Friend Finder
         </div>
         <div class="right">
-          <a class="link icon-only color-red">
+          <a class="link icon-only color-red" @click="logout">
             <i class="icon f7-icons if-not-md">escape</i>
             <i class="icon material-icons md-only md-48">power_settings_new</i>
           </a>
@@ -66,152 +52,170 @@
     </div>
 
     <div class=" page-content">
-    <div id="mapid"></div>
+      <div id="mapid"></div>
     </div>
     <div class="toolbar tabbar tabbar-labels toolbar-bottom color-white">
       <div class="toolbar-inner">
 
-      <a href="/profile" class="tab-link tab-link-active">
-        <i class="icon icon-fill f7-icons if-not-md color-black">person_alt_circle</i>
-        <i class="icon material-icons md-only color-black">person_alt_circle</i>
-        <span class="tabbar-label text-color-black">
-          <b>PROFILE</b>
-        </span>
-      </a>
+        <a href="/profile" class="tab-link tab-link-active">
+          <i class="icon icon-fill f7-icons if-not-md color-black">person_alt_circle</i>
+          <i class="icon material-icons md-only color-black">person_alt_circle</i>
+          <span class="tabbar-label text-color-black">
+            <b>PROFILE</b>
+          </span>
+        </a>
 
-      <a href="/add_friend" class="tab-link tab-link-active">
-        <i class="icon f7-icons if-not-md color-blue">plus_rectangle</i>
-        <i class="icon material-icons md-only color-blue">add_circle_outline</i>
-        <span class="tabbar-label text-color-blue">
+        <a href="/add_friend" class="tab-link tab-link-active">
+          <i class="icon f7-icons if-not-md color-blue">plus_rectangle</i>
+          <i class="icon material-icons md-only color-blue">add_circle_outline</i>
+          <span class="tabbar-label text-color-blue">
             <b>ADD A FRIEND</b>
-        </span>
-      </a>
+          </span>
+        </a>
 
-      <a href="/friend_list" class="tab-link tab-link-active">
-        <i class="icon f7-icons if-not-md color-red">person_3_fill</i>
-        <i class="icon material-icons md-only color-red">people_outline</i>
-        <span class="tabbar-label text-color-red">
-          <b>FRIENDS LIST</b>
-        </span>
-      </a>
+        <a href="/friend_list" class="tab-link tab-link-active">
+          <i class="icon f7-icons if-not-md color-red">person_3_fill</i>
+          <i class="icon material-icons md-only color-red">people_outline</i>
+          <span class="tabbar-label text-color-red">
+            <b>FRIENDS LIST</b>
+          </span>
+        </a>
       </div>
     </div>
   </div>
 
 </template>
 <script>
-    return {
-        methods: {
+  return {
+    methods: {
 
-            shareMyPos: function() {
-                this.$router.navigate("/sharePos");
-
-
-            },
-            friendPos: function() {
-                this.$router.navigate("/main");
-            },
-            histPos: function() {
-                this.$router.navigate("/histPos")
-            },
-            plotCurrentFriendsPositions: function(friendsPosition) {
-                friendsPosition.forEach(element => {
-                    L.marker({
-                        lat: element.lat,
-                        lng: element.long
-                    }).addTo(map);
+      shareMyPos: function () {
+        this.$router.navigate("/sharePos");
 
 
-                });
-
-            },
-            postPos: function() {
-                console.log("lol");
-            }
-
-        },
-        on: {
-            pageInit: function(e, page) {
-                try {
-                    map = L.map('mapid').setView([46.3630104, 2.9846608], 6);; // LIGNE 18
-                } catch {
-                    map = mapReset();
-                }
-
-                var osmLayer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', { // LIGNE 20
-                    attribution: '© OpenStreetMap contributors',
-                    maxZoom: 19
-                });
-
-                map.addLayer(osmLayer);
-
-                //map init with current positions
-                var token = localStorage.getItem("token");
-                var data = {
-                    url: "http://localhost:3000/currFriendsPosition",
-                    method: "GET"
-                }
-                headers = {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + token,
-                };
-
-                fetch(data.url, {
-                        method: data.method,
-                        headers: headers
-                    })
-                    .then(res => res.json())
-                    .then(res => {
-                        if (res.status == 200) {
-                            plotCurrentFriendsPositions(res.friendsPosition)
-                        } else {
-                            alert(res.error);
-
-                        }
-                    })
-                    .catch(err => this.$app.dialog.alert('Error ' + err))
-
-                function plotCurrentFriendsPositions(friendsPosition) {
-                    friendsPosition.forEach(element => {
-                        L.marker({
-                                lat: element.lat,
-                                lng: element.long
-                            }, {
-                                icon: myIcon
-                            }).addTo(map)
-                            .bindPopup(
-                                "pseudo : " + element.pseudo + "<br>" + "email : " + element.email + "<br>" + "date : " + new Date(element.date) + "<br>" + "message : " +
-                                element.message
-                            );
+      },
+      friendPos: function () {
+        this.$router.navigate("/main");
+      },
+      histPos: function () {
+        this.$router.navigate("/histPos")
+      },
+      plotCurrentFriendsPositions: function (friendsPosition) {
+        friendsPosition.forEach(element => {
+          L.marker({
+            lat: element.lat,
+            lng: element.long
+          }).addTo(map);
 
 
-                    });
-                    map.locate();
+        });
 
-                    function onLocationFound(e) {
-                        var radius = e.accuracy;
+      },
+      postPos: function () {
+        console.log("lol");
+      },
+      logout: function () {
+        app.dialog.confirm(
+          'Do you want to disconnect ?',
+          function () {
+            localStorage.removeItem('token');
+            app.views.main.router.navigate("/", {
+              reloadCurrent: true
+            });
 
-                        L.marker(e.latlng).addTo(map)
-                            .bindPopup("This is your current position").openPopup
+          },
+          function () {
+            app.views.main.router.navigate("/main", {
+              reloadCurrent: true
+            });
+          })
+      },
 
+    
 
-                        //L.circle(e.latlng, radius).addTo(map);
-                    }
-
-                    map.on('locationfound', onLocationFound);
-
-                    function onLocationError(e) {
-                        alert(e.message);
-                    }
-                    map.on('locationerror', onLocationError);
-                }
-            },
-            actualize: function() {
-                this.$router.navigate("/profile")
-            }
-
-
+    },
+    on: {
+      pageInit: function (e, page) {
+        try {
+          map = L.map('mapid').setView([46.3630104, 2.9846608], 6);; // LIGNE 18
+        } catch {
+          map = mapReset();
         }
 
+        var osmLayer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', { // LIGNE 20
+          attribution: '© OpenStreetMap contributors',
+          maxZoom: 19
+        });
+
+        map.addLayer(osmLayer);
+
+        //map init with current positions
+        var token = localStorage.getItem("token");
+        var data = {
+          url: "http://localhost:3000/currFriendsPosition",
+          method: "GET"
+        }
+        headers = {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + token,
+        };
+
+        fetch(data.url, {
+          method: data.method,
+          headers: headers
+        })
+          .then(res => res.json())
+          .then(res => {
+            if (res.status == 200) {
+              plotCurrentFriendsPositions(res.friendsPosition)
+            } else {
+              alert(res.error);
+
+            }
+          })
+          .catch(err => this.$app.dialog.alert('Error ' + err))
+
+        function plotCurrentFriendsPositions(friendsPosition) {
+          friendsPosition.forEach(element => {
+            L.marker({
+              lat: element.lat,
+              lng: element.long
+            }, {
+              icon: myIcon
+            }).addTo(map)
+              .bindPopup(
+                "pseudo : " + element.pseudo + "<br>" + "email : " + element.email + "<br>" + "date : " + new Date(element.date) + "<br>" + "message : " +
+                element.message
+              );
+
+
+          });
+          map.locate();
+
+          function onLocationFound(e) {
+            var radius = e.accuracy;
+
+            L.marker(e.latlng).addTo(map)
+              .bindPopup("This is your current position").openPopup
+
+
+            //L.circle(e.latlng, radius).addTo(map);
+          }
+
+          map.on('locationfound', onLocationFound);
+
+          function onLocationError(e) {
+            alert(e.message);
+          }
+          map.on('locationerror', onLocationError);
+        }
+      },
+      actualize: function () {
+        this.$router.navigate("/profile")
+      }
+
+
     }
+
+  }
 </script>

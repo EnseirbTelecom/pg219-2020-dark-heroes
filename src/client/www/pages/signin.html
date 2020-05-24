@@ -34,9 +34,11 @@
 			<a @click="back" class="button" href="#">
 				<button class="col button button-raised button-round col button button-fill color-white text-color-black">Back</button>
 			</a>
-		</div>
+    </div>
+    <div id="snackbar">Email or password invalid</div>
 	</div>
-	</div>
+  </div>
+  
 </template>
 <script>
     return {
@@ -68,12 +70,14 @@
                         if (res.status == 200) {
                             if (res.token) {
                                 localStorage.setItem('token', res.token);
-                                alert('Login succes.');
                                 this.$router.navigate("/main");
 
                             }
                         } else {
-                            alert(res.error);
+                            var x = document.getElementById("snackbar");
+                            x.className = "show";
+                            setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+                            // alert(res.error);
                         }
                     })
                     .catch(err => this.$app.dialog.alert('Error ' + err))
