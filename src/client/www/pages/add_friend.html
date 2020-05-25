@@ -54,6 +54,7 @@
 
     <div id="snackbar" >Friend request sent</div>
     <div id="snackbar1" >Friend not found</div>
+    <div id="snackbar2" >It is your email</div>
 
   </div>
 </template>
@@ -86,10 +87,16 @@
                           var x = document.getElementById("snackbar");
                           x.className = "show";
                           setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
-                        } else {
+                        } else {if (res.status == 401){
+                          var x = document.getElementById("snackbar2");
+                          x.className = "show";
+                          setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+                        } 
+                        else {
                           var x = document.getElementById("snackbar1");
                           x.className = "show";
                           setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+                        }
                         }
                     })
                     .catch(err => this.$app.dialog.alert('Error ' + err))

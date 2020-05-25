@@ -66,6 +66,10 @@ exports.addFriend = async function(req, res) {
         if (userId != -1) {
             user = await findUser.getUserByID(userId);
             if (user != null) {
+                var email = user.email;
+                if (email == friend){
+                    return res.status(401).json({ error: friend + ' is you.', status: 401 })
+                }
                 var friends = user.friends;
                 friends.forEach(element => {
                     if (element == friend) {
