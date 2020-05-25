@@ -197,9 +197,13 @@ exports.getFriendsCurrentPosition = async function(req, res) {
     if (userId != -1) {
         var user = await findUser.getUserByID(userId);
         var friends = user.friends;
-        console.log(friends);
-        if (friends != null) {
-            const friendsCurrentPosition = await findPosition.findFriendsPosition(friends);
+        var friendlist = [];
+        friends.forEach(element => {
+            friendlist.push(element.email)
+
+        });
+        if (friendlist != null) {
+            const friendsCurrentPosition = await findPosition.findFriendsPosition(friendlist);
             console.log(friendsCurrentPosition);
             if (friendsCurrentPosition != null) {
                 return res.status(200).json({ friendsPosition: friendsCurrentPosition, status: 200 });
