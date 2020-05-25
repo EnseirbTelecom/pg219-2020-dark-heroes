@@ -1,0 +1,422 @@
+openapi: "3.0.2"
+
+info:
+  title: Friend Finder
+  version: '1.0'
+  description: "L'API de FriendFinder est une API REST. Elle a des URL orientées ressources, elle renvoie des données codées en JSON, elle utilise les codes de réponses standards HTTP, et une authentification."
+
+  #termsOfService: "https://openweathermap.org/terms"
+  license:
+    name: "Repo Git"
+    url: "https://github.com/EnseirbTelecom/pg219-2020-dark-heroes/tree/master/doc"
+
+servers:
+  - url: https://localhost:3000
+
+security:
+  - friendFinder_auth: []
+
+tags:
+  - name: "User"
+    description: "Cet objet contient toutes les informations sur un utilisateur."
+
+  - name: "Friends"
+    description: "Relations et intéractions avec les amis d'un utilisateur. "
+
+  - name: "Position"
+    description: "Positions courantes et historique des positions des utilisateurs."
+
+  - name: "Authentification"
+    description: "Inscription et connexion des utilisateurs."
+
+components:
+
+  securitySchemes:
+    friendFinder_auth:
+      type: "http"
+      scheme: "bearer"
+      bearerFormat: "JWT"
+      description: "L'utilisateur doit s'identifier pour accéder aux requêtes."
+
+  schemas:
+
+    Hist_position:
+      type: object
+      properties:
+        hist_lat:
+          type: string
+        hist_long:
+          type: string
+        hist_date:
+          type: string
+          format: date
+        message:
+          type: string
+
+
+    Position:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        pseudo:
+          type: string
+        lat:
+          type: string
+        long:
+          type: string
+        date:
+          type: string
+          format: date
+        duration:
+          type: string
+          minimum: 0
+        message:
+          type: string
+
+    User:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+        first_name:
+          type: string
+        last_name:
+          type: string
+        pseudo:
+          type: string
+        birthday:
+          type: string
+          format: date
+        gender:
+          type: string
+        current_lat:
+          type: string
+        current_long:
+          type: string
+        activation_date:
+          type: string
+          format: date
+        duration:
+          type: number
+          minimum: 0
+        hist_positions:
+          type: object
+          additionalProperties:
+            $ref: "#/components/schemas/Hist_position"
+        friends:
+          type: array
+          items:
+            type: string
+        friend_request:
+          type: array
+          items:
+            type: string
+        friend_pending:
+          type: array
+          items:
+            type: string
+
+
+
+paths:
+
+  /Users/{id}:
+    get:
+      tags:
+        - "User"
+      summary: "Renvoie les informations d'un utilisateur"
+      description: ""
+      operationId: "findUser"
+      parameters:
+        - name: "id"
+          in: path
+          description: "Chaîne de 24 caractères en hexadécimal qui identifie un élément de la base de données"
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Opération réussie"
+          content:
+            json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "404":
+          description: "Utilisateur introuvable"
+          content:
+            json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "User not found"
+
+    delete:
+      tags:
+        - "User"
+      summary: "Supprimer un utilisateur"
+      description: ""
+      operationId: "deleteUser"
+      parameters:
+        - name: "id"
+          in: path
+          description: "Chaîne de 24 caractères hexadécimal qui identifie un élément de la base de données"
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Opération réussie"
+          content:
+            json:
+              schema:
+                type: string
+                example: "User Successfully Deleted"
+        "404":
+          description: "Utilisateur introuvable"
+          content:
+            json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "User not found"
+
+  /Users:
+    post:
+      tags:
+        - "User"
+      summary: "Ajouter un utilisateur"
+      description: ""
+      operationId: "addUser"
+      parameters:
+        - name: "id"
+          in: path
+          description: "Chaîne de 24 caractères hexadécimal qui identifie un élément de la base de données"
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Opération réussie"
+          content:
+            json:
+              schema:
+                type: object
+                properties:
+                  state:
+                    type: string
+                    example: "Your account has been created."
+                  status:
+                    type: integer
+                    example: 200
+
+        "400":
+          description: "Informations manquantes, ou pseudo/email déjà attribué."
+          content:
+            json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Please, fill in the form proprely."
+                  status:
+                    type: integer
+                    example: 400
+
+  /Users_GET:
+    get:
+      tags:
+        - User
+      summary: "Renvoie la liste des utilisateurs"
+      description: ""
+      operationId: ""
+      parameters:
+        - name: "id"
+          in: cookie
+          description: "Chaîne de 24 caractères hexadécimal qui identifie un élément de la base de données"
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Opération réussie"
+          content:
+            json:
+              schema:
+                type: array
+                items:
+                  type: object
+
+
+  /friends:
+    get:
+      tags:
+        - Friends
+      summary: "Renvoie la liste des amis"
+      operationId: "getFriends"
+      responses:
+        "200":
+          description: "Opération réussie"
+          content:
+            json:
+              schema:
+                type: object
+                properties:
+                  friendslist:
+                    type: array
+                    items:
+                      type: string
+                      example: Antoine Dubois, Sophie Martin, Fred Lanvin
+                  status:
+                    type: integer
+                    example: 200
+        "404":
+          description: "Erreur"
+        "403":
+          description: "Erreur"
+
+  /friendsrequests:
+    get:
+      tags:
+        - Friends
+      summary: "Renvoie la liste des demandes d'amis"
+      operationId: "getFriendrequests"
+      responses:
+        "200":
+          description: "Opération réussie"
+          content:
+            json:
+              schema:
+                type: object
+                properties:
+                  friendrequests:
+                    type: array
+                    items:
+                      type: string
+                      example: Antoine Dubois, Sophie Martin, Fred Lanvin
+                  status:
+                    type: integer
+                    example: 200
+        "404":
+          description: "Erreur"
+        "403":
+          description: "Erreur"
+
+  /friend:
+    delete:
+      tags:
+        - Friends
+      summary: "Supprimer un ami de la liste"
+      operationId: "deletefriend"
+      responses:
+        "200":
+          description: "Opération réussie"
+          content:
+            json:
+              schema:
+                type: object
+                properties:
+                  state:
+                    type: string
+                    example: "Jean Dupont has been removed."
+                  status:
+                    type: integer
+                    example: 200
+        "404":
+          description: "Erreur"
+          content:
+            json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Jean Dupont doesn't exist."
+                  status:
+                    type: integer
+                    example: 404
+        "403":
+          description: "Erreur"
+
+  /addfriend:
+    post:
+      tags:
+        - Friends
+      summary: "Ajouter un ami"
+      operationId: "addFriend"
+      responses:
+        "200":
+          description: "Opération réussie"
+          content:
+            json:
+              schema:
+                type: object
+                properties:
+                  state:
+                    type: string
+                    example: "Friend request for Jean Dupont sent."
+                  status:
+                    type: integer
+                    example: 200
+
+        "400":
+          description: "L'ami est déjà présent dans la liste"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Jean Dupont is already your friend."
+                  status:
+                    type: integer
+                    example: 400
+        "404":
+          description: "L'utilisateur n'existe pas."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Jean Dupont doesn't exist."
+                  status:
+                    type: integer
+                    example: 404
+        "403":
+          description: "Erreur"
+
+  /friendRequestReply:
+    post:
+      tags:
+        - Friends
+      summary: "Répondre à une demande d'ami"
+      operationId: "friendRequestReply"
+      responses:
+        "200":
+          description: "Opération réussie"
+          content:
+            json:
+              schema:
+                type: object
+                properties:
+                  state:
+                    type: string
+                    example: "Jean Dupont has been added to your friends."
+                  status:
+                    type: integer
+                    example: 200
+        "403":
+          description: "Erreur"
