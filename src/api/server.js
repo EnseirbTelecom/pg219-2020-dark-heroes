@@ -27,12 +27,16 @@ var users = db.collection('UserCollection')
 
 //Users
 
-server.get("/Users/:id", (req, res) => {
-    functions.findUser(req, res, users)
+server.get("/profile", (req, res) => {
+    functions.getMyProfile(req, res)
 })
 
-server.delete("/Users/:id", (req, res) => {
-    functions.deleteUser(req, res, users)
+server.delete("/delProfile", (req, res) => {
+    functions.deleteMyProfile(req, res)
+})
+
+server.post("/updateProfile", (req, res) => {
+    functions.updateMyProfile(req, res)
 })
 
 server.post("/Users", (req, res) => {

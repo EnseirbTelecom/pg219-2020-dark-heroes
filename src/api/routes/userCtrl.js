@@ -5,6 +5,7 @@ var jwt = require('jsonwebtoken');
 var userModel = require('../database/model/User_model');
 var jwtUtils = require('../utils/jwt.utils');
 var findUser = require('../database/find/UserFind');
+var del = require('../database/delete');
 
 
 
@@ -38,6 +39,8 @@ async function infosAreValid(req, db_collection) {
         return er
     } else return true
 }
+
+
 
 exports.addUser = async function(req, res, db_collection) {
     var user = userModel.user_init();
@@ -103,14 +106,81 @@ exports.isConnect = function(req, res) {
     }
 }
 
-exports.findUser = function(req, res, db_collection) {
-    var user = db_collection.findOne({ _id: ObjectID(req.params.id) })
-        .then(user => (user) ? res.json(user) : res.status(404).json({ error: "User not found." }))
+exports.getMyProfile = async function(req, res) {
+    //Getting auth header
+    var headerAuth = req.headers.authorization;
+    var userId = jwtUtils.getUserId(headerAuth);
+
+    //Test if already connected
+    if (userId != -1) {
+        var user = await findUser.getUserByID(userId);
+        if (user != null) {
+            return res.status(200).json({
+                'status': 200,
+                'user': user
+            })
+        } else {
+            return res.status(404).json({
+                error: "User not found.",
+                'status': 404
+            })
+        }
+    } else {
+        return res.status(403).json({
+            'error': 'token not valid',
+            'status': 403
+        })
+    }
 }
 
-exports.deleteUser = function(req, res, db_collection) {
-    db_collection.remove({ _id: ObjectID(req.params.id) })
-        .then(command => (command.result.n == 1) ? res.json("User Successfully Deleted") : res.status(404).json({ error: "User not found." }))
+exports.deleteMyProfile = async function(req, res) {
+    //Getting auth header
+    var headerAuth = req.headers.authorization;
+    var userId = jwtUtils.getUserId(headerAuth);
+
+    //Test if already connected
+    if (userId != -1) {
+        await del.deleteUserById(userId);
+        return res.status(200).json({
+            'status': 200,
+            'state': 'user deleted'
+        })
+
+    } else {
+        return res.status(403).json({
+            'error': 'token not valid',
+            'status': 403
+        })
+    }
+}
+exports.updateMyProfile = async function(req, res) {
+    //Getting auth header
+    var headerAuth = req.headers.authorization;
+    var userId = jwtUtils.getUserId(headerAuth);
+
+    //Test if already connected
+    if (userId != -1) {
+        var update = req.body.update;
+        if (update != null) {
+            var user = await findUser.getUserByID(userId);
+
+            return res.status(200).json({
+                'status': 200,
+                'state': 'user deleted'
+            })
+        } else {
+            return res.status(404).json({
+                'status': 404,
+                'error': 'nothing to update'
+            })
+        }
+
+    } else {
+        return res.status(403).json({
+            'error': 'token not valid',
+            'status': 403
+        })
+    }
 }
 
 async function existUser(email, db_collection) {
