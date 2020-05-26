@@ -44,7 +44,7 @@
 							</a>
 						</center>
 					</button>
-					<button class="button button-round color-red">
+					<button @click="deleteprofile" class="button button-round color-red">
 						<center>Delete</center>
 					</button>
 				</div>
@@ -196,7 +196,31 @@
 							})
 							.catch(err => this.$app.dialog.alert('Error ' + err))
 						}
+				},
+
+				deleteprofile: function(){
+					var token = localStorage.getItem('token');
+					const deleteprofileData = {
+						url: "http://localhost:3000/delProfile",
+						method: "DELETE"
+					};
+
+					headers = {
+						"Content-Type": "application/json",
+						"Authorization": "Bearer " + token,
+					}
+					fetch(deleteprofileData.url, {
+						method: deleteprofileData.method,
+						headers: headers,
+					})
+					.then(res => res.json())
+					.then(res => {
+						if (res.status == 200) {
+							this.$router.navigate("/");
+						}
+					})
+					.catch(err => this.$app.dialog.alert('Error ' + err))
 				}
 			},
-    }
+  	}
 </script>
