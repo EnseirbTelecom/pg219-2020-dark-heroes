@@ -49,6 +49,22 @@
 					</button>
 				</div>
 			</div>
+			<br><br>
+			<center>
+				<div class="title" style="font-size: 12pt;
+																	font-family: cursive;
+																	color: black;">
+																	<b>Check your shared positions history down below !</b>
+								<i class=" bg-color-lime color-black icon f7-icons if-not-md">map</i>
+								<i class=" bg-color-lime color-black icon material-icons md-only">map</i>
+				</div>
+			</center>
+			<div class="block">
+				<a @click="histPos" class="button" href="#">
+					<button
+						class="col button button-raised button-fill button-round col button color-lime text-color-black"><b>Show history</b></button>
+				</a>
+			</div>
 
 			<div class="popup popup-about">
 
@@ -150,6 +166,9 @@
 
 			methods:{
 
+				histPos: function () {
+					this.$router.navigate("/histPos")
+				},
 				changepassword: function(){
 					var token = localStorage.getItem('token');
 					const old_password = document.querySelector('#old_password').value;

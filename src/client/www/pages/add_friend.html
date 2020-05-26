@@ -1,7 +1,7 @@
 <template>
 	<div class="page">
 	  <div class="page-content">
-          
+
       <div class="navbar color-theme-teal">
         <div class="navbar-bg"></div>
         <div class="navbar-inner sliding">
@@ -29,8 +29,7 @@
                                                left: 50%;
                                                -ms-transform: translate(-50%, -50%);
                                                transform: translate(-50%, -50%);">
-        <ul>
-          <li>
+
             <div class="item-content item-input">
               <div class="item-inner">
                 <div class="item-title item-label" style = "font-size: 12pt;"><center><p><b>You can add a friend by his email.<b><p><center></div>
@@ -39,17 +38,9 @@
                 </div>
               </div>
             </div>
-          </li>
-        </ul>
       </form>
         <div class="col"><a @click="addfriend" class="button convert-form-to-data" href="#">Submit</a></div>
-
-        
-
-
-
-
-
+				
     </div>
 
     <div id="snackbar" >Friend request sent</div>
@@ -63,7 +54,7 @@
         methods: {
 
             addfriend: function() {
-              
+
                 const pseudo = document.querySelector('#pseudo').value;
                 const queryData = this.friend_request();
                 var token = localStorage.getItem('token');
@@ -91,7 +82,7 @@
                           var x = document.getElementById("snackbar2");
                           x.className = "show";
                           setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
-                        } 
+                        }
                         else {
                           var x = document.getElementById("snackbar1");
                           x.className = "show";
@@ -100,7 +91,7 @@
                         }
                     })
                     .catch(err => this.$app.dialog.alert('Error ' + err))
-                    
+
 
             },
 
