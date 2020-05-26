@@ -6,6 +6,7 @@ var userModel = require('../database/model/User_model');
 var jwtUtils = require('../utils/jwt.utils');
 var findUser = require('../database/find/UserFind');
 var del = require('../database/delete');
+var up = require('../database/update/userUpdate');
 
 
 
@@ -137,7 +138,6 @@ exports.deleteMyProfile = async function(req, res) {
     //Getting auth header
     var headerAuth = req.headers.authorization;
     var userId = jwtUtils.getUserId(headerAuth);
-
     //Test if already connected
     if (userId != -1) {
         await del.deleteUserById(userId);
@@ -153,6 +153,38 @@ exports.deleteMyProfile = async function(req, res) {
         })
     }
 }
+
+exports.changepassword = async function(req, res) {
+    //Getting auth header
+    var headerAuth = req.headers.authorization;
+    var userId = jwtUtils.getUserId(headerAuth);
+    var user = await findUser.getUserByID(userId);
+    //Test if already connected
+    if (userId != -1) {
+        var old_password = req.body.old_password;
+        var new_password = req.body.new_password;
+        bcrypt.compare(old_password, user.password, function(errBcrypt, resBcrypt) {
+            if (resBcrypt) {
+              bcrypt.hash(new_password, 5, function(err, bcryptedPassword) {
+                  user.password = bcryptedPassword;
+                  up.updateUser(userId, { password: user.password });
+              })
+                return (res.status(200).json({
+                    'status': 200
+                }))
+            } else {
+                return (res.status(403).json({ error: 'Old password is incorrect.' }))
+            }
+        })
+
+    } else {
+        return res.status(403).json({
+            'error': 'token not valid',
+            'status': 403
+        })
+    }
+}
+
 exports.updateMyProfile = async function(req, res) {
     //Getting auth header
     var headerAuth = req.headers.authorization;

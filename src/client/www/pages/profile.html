@@ -20,9 +20,183 @@
         </div>
       </div>
 
+			<div class="card card-outline">
+				<div class="card-header text-color-black">
+					<i class="icon material-icons md-only">person_alt_circle</i>
+					<i class="icon f7-icons if-not-md">person_alt_circle</i>
+					<b>My Profile</b>
+				</div>
+				{{#myprofile}}
+				<div class="card-content card-content-padding" style="text-transform:capitalize">
+					<b class="text-color-teal">First Name : </b>{{first_name}}<br>
+					<b class="text-color-teal">Last Name : </b>{{last_name}}<br>
+					<b class="text-color-teal">Email : </b>{{email}}<br>
+					<b class="text-color-teal">Pseudo : </b>{{pseudo}}<br>
+					<b class="text-color-teal">Birthday : </b>{{birthday}}<br>
+					<b class="text-color-teal">Gender : </b>{{gender}}<br>
+				</div>
+				{{/myprofile}}
+				<div class="card-footer">
+					<button class="button button-round">
+						<center>
+							<a class="button popup-open" href="#" data-popup=".popup-about">
+								<div class="item-title" style = "text-transform:capitalize; color: blue"><b>SETTINGS</b></div>
+							</a>
+						</center>
+					</button>
+					<button class="button button-round color-red">
+						<center>Delete</center>
+					</button>
+				</div>
+			</div>
 
+			<div class="popup popup-about">
 
+				<div class="navbar color-theme-red">
+					<div class="navbar-bg"></div>
+						<div class="navbar-inner sliding">
+							<div class="left">
+								<a id="closepopup" class="link popup-close" href="#">
+									<i class="icon icon-back" style="color: red;"></i>
+									<span class="if-not-md">Back</span>
+								</a>
+							</div>
+							<div class="title" style="font-family: cursive"><p class="text-color-red">Change Settings</p></div>
+							<div class="right" style="color: red;">
+		            <a class="link icon-only">
+		              <i class="icon material-icons md-only">lock</i>
+									<i class="icon f7-icons if-not-md">lock_fill</i>
+		            </a>
+		          </div>
+					</div>
+				</div>
+				<form class="list" id="my-form">
+					<ul>
+						<li>
+							<div class="item-content item-input">
+								<div class="item-inner">
+									<div class="item-title item-label" style="font-size: 11pt; color: black;">Old Password</div>
+									<div class="item-input-wrap">
+										<input id="old_password" name="old_password" type="password" placeholder="Enter your old password">
+									</div>
+								</div>
+							</div>
+						</li>
+						<li>
+							<div class="item-content item-input">
+								<div class="item-inner">
+									<div class="item-title item-label" style="font-size: 11pt; color: black;">New Password</div>
+									<div class="item-input-wrap">
+										<input id="new_password" name="new_password" type="password" placeholder="Enter your new password">
+									</div>
+								</div>
+							</div>
+						</li>
+						<li>
+							<div class="item-content item-input">
+								<div class="item-inner">
+									<div class="item-title item-label" style="font-size: 11pt; color: black;">Confirm Password</div>
+									<div class="item-input-wrap">
+										<input id="confirm_password" name="confirm_password" type="password" placeholder="Confirm your new password">
+									</div>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</form>
+				<div class="block">
+					<a @click="changepassword" class="button" href="#">
+						<button
+							class="col button button-raised button-fill button-round col button color-red text-color-black"><b>Submit</b></button>
+					</a>
+				</div>
+				<div id="snackbar1">Failed. Please fill the form properly</div>
+				<div id="snackbar">Passwords do not match</div>
+			</div>
 
+			<div id="snackbar2">Password successfully changed</div>
     </div>
   </div>
 </template>
+<script>
+    return {
+      async data() {
+				var token = localStorage.getItem('token');
+
+				const profileData = {
+						url: "http://localhost:3000/profile",
+						method: "GET"
+				};
+
+				headers = {
+						"Content-Type": "application/json",
+						"Authorization": "Bearer " + token,
+				}
+
+				var myprofile;
+
+				try {
+          myprofile = await fetch(profileData.url, {
+																		method: profileData.method,
+																		headers: headers,
+																	})
+            .then(res => res.json());
+        } catch(err) {
+          this.$app.dialog.alert("Error " + err);
+        }
+
+				return {myprofile: myprofile.user};
+      },
+
+			methods:{
+
+				changepassword: function(){
+					var token = localStorage.getItem('token');
+					const old_password = document.querySelector('#old_password').value;
+					const new_password = document.querySelector('#new_password').value;
+					const confirm_password = document.querySelector('#confirm_password').value;
+
+					if (new_password !== confirm_password) {
+						var x = document.getElementById("snackbar");
+						x.className = "show";
+						setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+						document.querySelector('#password').value = "";
+						const confirm_password = document.querySelector('#confirm_password').value = "";
+					} else {
+						const settingsData = {
+								url: "http://localhost:3000/settings",
+								method: "POST"
+						};
+
+						headers = {
+								"Content-Type": "application/json",
+								"Authorization": "Bearer " + token,
+						}
+						fetch(settingsData.url, {
+							method: settingsData.method,
+							headers: headers,
+							body: JSON.stringify({
+								old_password: old_password,
+								new_password: new_password,
+								confirm_password: confirm_password
+							})
+						})
+							.then(res => res.json())
+							.then(res => {
+								if (res.status == 200) {
+									var x = document.getElementById("snackbar2");
+									x.className = "show";
+									setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+									document.getElementById("closepopup").click();
+								} else {
+									var x = document.getElementById("snackbar1");
+									x.className = "show";
+									setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+								}
+							})
+							.catch(err => this.$app.dialog.alert('Error ' + err))
+						}
+				}
+			},
+    }
+</script>

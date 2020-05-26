@@ -39,6 +39,10 @@ server.post("/updateProfile", (req, res) => {
     functions.updateMyProfile(req, res)
 })
 
+server.post("/settings", (req, res) => {
+    functions.changepassword(req, res)
+})
+
 server.post("/Users", (req, res) => {
     functions.addUser(req, res, users)
 })
