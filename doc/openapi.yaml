@@ -26,8 +26,8 @@ tags:
   - name: "Position"
     description: "Positions courantes et historique des positions des utilisateurs."
 
-  - name: "Authentification"
-    description: "Inscription et connexion des utilisateurs."
+  - name: "Connexion"
+    description: "Etat de connexion des utilisateur"
 
 components:
 
@@ -136,7 +136,7 @@ paths:
       parameters:
         - name: "id"
           in: path
-          description: "Chaîne de 24 caractères en hexadécimal qui identifie un élément de la base de données"
+          description: "Chaîne de 24 caractères en hexadécimal qui identifie un utilisateur"
           required: true
           schema:
             type: string
@@ -167,7 +167,7 @@ paths:
       parameters:
         - name: "id"
           in: path
-          description: "Chaîne de 24 caractères hexadécimal qui identifie un élément de la base de données"
+          description: "Chaîne de 24 caractères hexadécimal qui identifie un utilisateur"
           required: true
           schema:
             type: string
@@ -420,3 +420,170 @@ paths:
                     example: 200
         "403":
           description: "Erreur"
+
+  /histPosition:
+    get:
+      tags:
+        - Position
+      summary: "Renvoie l'historique des positions"
+      operationId: "getHistPosition"
+      responses:
+        "200":
+          description: "Opération réussie"
+          content:
+            json:
+              schema:
+                type: object
+                properties:
+                  hist_positions:
+                    $ref: "#/components/schemas/Hist_position"
+                  status:
+                    type: integer
+                    example: 200
+        "403":
+          description: "Erreur"
+
+  /currPosition:
+    get:
+      tags:
+        - Position
+      summary: "Renvoie la position courante"
+      operationId: "getCurrentPosition"
+      responses:
+        "200":
+          description: "Opération réussie"
+          content:
+            json:
+              schema:
+                type: object
+                properties:
+                  position:
+                    $ref: "#/components/schemas/Position"
+                  status:
+                    type: integer
+                    example: 200
+        "201":
+          description: "Utilisateur introuvable"
+          content:
+            json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 201
+        "403":
+          description: "Erreur"
+
+  /currFriendsPosition:
+    get:
+      tags:
+        - Position
+      summary: "Renvoie la position courrente d'un ami"
+      operationId: "getFriendsCurrentPosition"
+      responses:
+        "200":
+          description: "Opération réussie"
+          content:
+            json:
+              schema:
+                type: object
+                properties:
+                  friendsposition:
+                    $ref: "#/components/schemas/Position"
+                  status:
+                    type: integer
+                    example: 200
+        "201":
+          description: "Position indisponible, ou ami introuvable"
+          content:
+            json:
+              schema:
+                type: object
+                properties:
+                  state:
+                    type: string
+                    example: "no friends position are available"
+                  status:
+                    type: integer
+                    example: 201
+  /savePos:
+    post:
+      tags:
+        - Position
+      summary: "Sauvegarder une position"
+      operationId: "addPosition"
+      responses:
+        "200":
+          description: "Opération réussie"
+          content:
+            json:
+              schema:
+                type: object
+                properties:
+                  state:
+                    type: string
+                    example: "Position added"
+                  status:
+                    type : integer
+                    example: 200
+        "403":
+          description: "Erreur"
+  /delPos:
+    delete:
+      tags:
+        - Position
+      summary: "Supprimer une position"
+      operationId: "deletePosition"
+      responses:
+        "200":
+          description: "Opération réussie"
+          content:
+            json:
+              schema:
+                type: object
+                properties:
+                  state:
+                    type: string
+                    example: "element deleted"
+                  status:
+                    type: integer
+                    example: 200
+        "403":
+          description: "Erreur"
+
+  /isConnect:
+    post:
+      tags:
+        - Connexion
+      summary: "Vérifier l'état de connexion"
+      operationId: "isConnect"
+      responses:
+        "200":
+          description: "Token valide"
+          content:
+            json:
+              schema:
+                type: object
+                properties:
+                  state:
+                    type: string
+                    example: "connected, token valid"
+        "403":
+          description: "Erreur de connexion"
+          content:
+            json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "token not valid"
+
+
+
+
+
+
+
+      
