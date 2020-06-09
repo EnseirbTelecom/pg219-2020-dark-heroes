@@ -17,6 +17,21 @@
 
         </div>
 
+        <div class=" link chip margin-left" @click="histPos">
+
+            <div class="chip-media bg-color-lime">
+              <a class="icon-only color-black ">
+                <i class="icon f7-icons if-not-md">placemark_fill</i>
+                <i class="icon material-icons md-only">map-pin</i>
+              </a>
+            </div>
+
+            <div class="chip-label text-color-black">History</div>
+
+
+
+          </div>
+
         <div class="title padding-left" style="width: 357;
                                               margin: auto;
                                               width: 50%;
@@ -83,6 +98,11 @@
       friendPos: function () {
         this.$router.navigate("/main");
       },
+
+      histPos: function () {
+        this.$router.navigate("/histPos")
+      },
+
       plotCurrentFriendsPositions: function (friendsPosition) {
         friendsPosition.forEach(element => {
           L.marker({

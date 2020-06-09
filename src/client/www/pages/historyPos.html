@@ -3,6 +3,21 @@
         <div class="navbar">
             <div class="navbar-bg"></div>
             <div class="navbar-inner align-items-center">
+                
+                <div class="left">
+                    <div class=" link margin" @click="home">
+
+
+                        <a class="icon-only color-black ">
+                            <!-- <i class="icon f7-icons if-not-md">placemark_fill</i> -->
+                            <i class="icon material-icons md-only">home</i>
+                        </a>
+
+                    </div>
+                    
+
+                </div>
+
                 <div class="left">
 
                     <div class=" link chip margin-left" @click="shareMyPos">
@@ -171,7 +186,7 @@
                                     'lng': position.coords.longitude
                                 }
                                 L.marker(currentPos).addTo(map3)
-                                    .bindPopup("You hare here")
+                                    .bindPopup("You are here")
                             }, onGeolocError);
 
 
