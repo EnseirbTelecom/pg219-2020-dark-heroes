@@ -114,11 +114,28 @@ exports.addPosition = async function(req, res) {
             var hist_positions = user.hist_positions;
             var currentDate = new Date();
             if (position != null) {
-                var oldPosition = { hist_lat: position.lat, hist_long: position.long, hist_date: position.date, message: position.message };
-                hist_positions.push(oldPosition);
-                await up.updateUser(userId, { hist_positions: hist_positions, pseudo: "testchg" });
-                console.log(position._id);
-                await upPos.updatePosition(position._id, { long: current_long, lat: current_lat, date: currentDate, duration: duration, message: message });
+                var oldPosition = { hist_lat: position.lat, hist_long: position.long, hist_date: position.date, message: position.message, duration: position.duration };
+                if (oldPosition.duration != null){
+                    var endTime = endDurationDate(oldPosition.hist_date, oldPosition.duration);
+                    var currentDate = new Date();
+                    var currentTime = currentDate.getTime();
+                    if (currentTime > endTime) {
+                        hist_positions.push(oldPosition);
+                        console.log(position._id);
+                        await upPos.updatePosition(position._id, { long: current_long, lat: current_lat, date: currentDate, duration: duration, message: message });
+
+                        return res.status(200).json({ state: 'Position added', status: 200 });
+                    }       
+                    else {
+                        return res.status(401).json({ state: 'Duration too short', status: 401 });
+                    }
+
+                }
+                else{
+                    hist_positions.push(oldPosition);
+                    console.log(position._id);
+                    await upPos.updatePosition(position._id, { long: current_long, lat: current_lat, date: currentDate, duration: duration, message: message });
+                }
             } else {
                 position = positionModel.positionInit();
                 position.email = user.email;
