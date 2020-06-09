@@ -106,9 +106,7 @@ components:
           type: number
           minimum: 0
         hist_positions:
-          type: object
-          additionalProperties:
-            $ref: "#/components/schemas/Hist_position"
+          $ref: "#/components/schemas/Hist_position"
         friends:
           type: array
           items:
@@ -208,54 +206,6 @@ paths:
                     type: integer
                     example: 403
 
-  /updateProfile:
-    post:
-      tags:
-        - Utilisateur
-      summary: "Mettre son profil à jour"
-      operationId: "updateMyProfile"
-      responses:
-        "200":
-          description: "Opération réussie"
-          content:
-            json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: integer
-                    example: 200
-                  state:
-                    type: string
-                    example: "user deleted"
-        "404":
-          description: "Aucune mise à jour"
-          content:
-            json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: integer
-                    example: 404
-                  error:
-                    type: string
-                    example: "nothing to update"
-
-        "403":
-          description: "Erreur d'autorisation"
-          content:
-            json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: "token not valid"
-                  status:
-                    type: integer
-                    example: 403
-
 
   /settings:
     post:
@@ -263,6 +213,21 @@ paths:
         - Utilisateur
       summary: "Changer de mot de passe"
       operationId: "changepassword"
+      requestBody:
+        description: "JSON contenant l'ancien et le nouveau mot de passe"
+        required: true
+        content:
+          json:
+            schema:
+              type: object
+              properties:
+                old_password:
+                  type: string
+                  format: password
+                new_password:
+                  type: string
+                  format: password
+
       responses:
         "200":
           description: "Opération réussie"
@@ -295,13 +260,13 @@ paths:
       summary: "Ajouter un utilisateur"
       description: ""
       operationId: "addUser"
-      parameters:
-        - name: "id"
-          in: path
-          description: "Chaîne de 24 caractères hexadécimal qui identifie un élément de la base de données"
-          required: true
-          schema:
-            type: string
+      requestBody:
+        description: "Structure de User de l'utilisateur à ajouter"
+        required: true
+        content:
+          json:
+            schema:
+              $ref: "#/components/schemas/User"
       responses:
         "200":
           description: "Opération réussie"
@@ -331,36 +296,12 @@ paths:
                     type: integer
                     example: 400
 
-  /Users_GET:
-    get:
-      tags:
-        - Utilisateur
-      summary: "Renvoie la liste des utilisateurs"
-      description: ""
-      operationId: ""
-      parameters:
-        - name: "id"
-          in: cookie
-          description: "Chaîne de 24 caractères hexadécimal qui identifie un élément de la base de données"
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: "Opération réussie"
-          content:
-            json:
-              schema:
-                type: array
-                items:
-                  type: object
-
 
   /friends:
     get:
       tags:
         - Amis
-      summary: "Renvoie la liste des amis"
+      summary: "Accéder à la liste des amis"
       operationId: "getFriends"
       responses:
         "200":
@@ -387,7 +328,7 @@ paths:
     get:
       tags:
         - Amis
-      summary: "Renvoie la liste des demandes d'amis"
+      summary: "Accéder à la liste des demandes d'amis"
       operationId: "getFriendrequests"
       responses:
         "200":
@@ -410,7 +351,7 @@ paths:
         "403":
           description: "Erreur"
 
-  /friend:
+  /delFriend:
     delete:
       tags:
         - Amis
@@ -446,12 +387,19 @@ paths:
         "403":
           description: "Erreur"
 
-  /addfriend:
+  /addFriend:
     post:
       tags:
         - Amis
       summary: "Ajouter un ami"
       operationId: "addFriend"
+      requestBody:
+        description: "Structure User de l'ami à ajouter"
+        required: true
+        content:
+          json:
+            schema:
+              $ref: "#/components/schemas/User"
       responses:
         "200":
           description: "Opération réussie"
@@ -502,6 +450,18 @@ paths:
         - Amis
       summary: "Répondre à une demande d'ami"
       operationId: "friendRequestReply"
+      requestBody:
+        description: "JSON contenant la structure User de l'ami et une variable accept"
+        required: true
+        content:
+          json:
+            schema:
+              type: object
+              properties:
+                friend:
+                  $ref: "#/components/schemas/User"
+                accept:
+                  type: boolean
       responses:
         "200":
           description: "Opération réussie"
@@ -611,6 +571,13 @@ paths:
         - Position
       summary: "Sauvegarder une position"
       operationId: "addPosition"
+      requestBody:
+        description: "Structure User de l'utilisateur"
+        required: true
+        content:
+          json:
+            schema:
+              $ref: "#/components/schemas/User"
       responses:
         "200":
           description: "Opération réussie"
@@ -633,6 +600,13 @@ paths:
         - Position
       summary: "Supprimer une position"
       operationId: "deletePosition"
+      requestBody:
+        description: "Structure User de l'utilisateur"
+        required: true
+        content:
+          json:
+            schema:
+              $ref: "#/components/schemas/User"
       responses:
         "200":
           description: "Opération réussie"
@@ -649,6 +623,57 @@ paths:
                     example: 200
         "403":
           description: "Erreur"
+
+  /Connect:
+    post:
+      tags:
+        - Connexion
+      summary: "Se connecter"
+      operationId: "connectUser"
+      requestBody:
+        description: "Structure User de l'utilisateur"
+        required: true
+        content:
+          json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        "200":
+          description: "Opération réussie"
+          content:
+            json:
+              schema:
+                type: object
+                properties:
+                  state:
+                    type: string
+                    example: "connected"
+                  token:
+                    type: number
+                    example: ""
+                  status:
+                    type: integer
+                    example: 200
+        "403":
+          description: "Erreur de connexion"
+          content:
+            json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "failed to connect"
+        "401":
+          description: "Utilisateur introuvable"
+          content:
+            json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "user unknown"
 
   /isConnect:
     post:
@@ -677,4 +702,3 @@ paths:
                   error:
                     type: string
                     example: "token not valid"
-      
