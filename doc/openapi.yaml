@@ -17,17 +17,17 @@ security:
   - friendFinder_auth: []
 
 tags:
-  - name: "User"
-    description: "Cet objet contient toutes les informations sur un utilisateur."
+  - name: "Utilisateur"
+    description: "Requêtes sur l'utilisateur."
 
-  - name: "Friends"
+  - name: "Amis"
     description: "Relations et intéractions avec les amis d'un utilisateur. "
 
   - name: "Position"
     description: "Positions courantes et historique des positions des utilisateurs."
 
   - name: "Connexion"
-    description: "Etat de connexion des utilisateur"
+    description: "Etat de connexion des utilisateurs"
 
 components:
 
@@ -126,27 +126,25 @@ components:
 
 paths:
 
-  /Users/{id}:
+  /profile:
     get:
       tags:
-        - "User"
-      summary: "Renvoie les informations d'un utilisateur"
-      description: ""
-      operationId: "findUser"
-      parameters:
-        - name: "id"
-          in: path
-          description: "Chaîne de 24 caractères en hexadécimal qui identifie un utilisateur"
-          required: true
-          schema:
-            type: string
+        - Utilisateur
+      summary: "Accéder à son profil"
+      operationId: "getMyProfile"
       responses:
         "200":
           description: "Opération réussie"
           content:
             json:
               schema:
-                $ref: "#/components/schemas/User"
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 200
+                  user:
+                    $ref: "#/components/schemas/User"
         "404":
           description: "Utilisateur introuvable"
           content:
@@ -157,30 +155,47 @@ paths:
                   error:
                     type: string
                     example: "User not found"
+                  status:
+                    type: integer
+                    example: 404
+        "403":
+          description: "Erreur d'autorisation"
+          content:
+            json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "token not valid"
+                  status:
+                    type: integer
+                    example: 403
 
+  /delProfile:
     delete:
       tags:
-        - "User"
-      summary: "Supprimer un utilisateur"
-      description: ""
-      operationId: "deleteUser"
-      parameters:
-        - name: "id"
-          in: path
-          description: "Chaîne de 24 caractères hexadécimal qui identifie un utilisateur"
-          required: true
-          schema:
-            type: string
+        - Utilisateur
+      operationId: "deleteMyProfile"
+      summary: "Supprimer son profil"
       responses:
         "200":
           description: "Opération réussie"
           content:
             json:
               schema:
-                type: string
-                example: "User Successfully Deleted"
-        "404":
-          description: "Utilisateur introuvable"
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 200
+                  state:
+                    type: string
+                    example: "user deleted"
+
+
+        "403":
+          description: "Erreur d'autorisation"
           content:
             json:
               schema:
@@ -188,12 +203,95 @@ paths:
                 properties:
                   error:
                     type: string
-                    example: "User not found"
+                    example: "token not valid"
+                  status:
+                    type: integer
+                    example: 403
+
+  /updateProfile:
+    post:
+      tags:
+        - Utilisateur
+      summary: "Mettre son profil à jour"
+      operationId: "updateMyProfile"
+      responses:
+        "200":
+          description: "Opération réussie"
+          content:
+            json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 200
+                  state:
+                    type: string
+                    example: "user deleted"
+        "404":
+          description: "Aucune mise à jour"
+          content:
+            json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 404
+                  error:
+                    type: string
+                    example: "nothing to update"
+
+        "403":
+          description: "Erreur d'autorisation"
+          content:
+            json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "token not valid"
+                  status:
+                    type: integer
+                    example: 403
+
+
+  /settings:
+    post:
+      tags:
+        - Utilisateur
+      summary: "Changer de mot de passe"
+      operationId: "changepassword"
+      responses:
+        "200":
+          description: "Opération réussie"
+          content:
+            json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 200
+        "403":
+          description: "Erreur d'autorisation ou ancien mot de passe incorrect"
+          content:
+            json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "token not valid"
+                  status:
+                    type: integer
+                    example: 403
 
   /Users:
     post:
       tags:
-        - "User"
+        - Utilisateur
       summary: "Ajouter un utilisateur"
       description: ""
       operationId: "addUser"
@@ -236,7 +334,7 @@ paths:
   /Users_GET:
     get:
       tags:
-        - User
+        - Utilisateur
       summary: "Renvoie la liste des utilisateurs"
       description: ""
       operationId: ""
@@ -261,7 +359,7 @@ paths:
   /friends:
     get:
       tags:
-        - Friends
+        - Amis
       summary: "Renvoie la liste des amis"
       operationId: "getFriends"
       responses:
@@ -288,7 +386,7 @@ paths:
   /friendsrequests:
     get:
       tags:
-        - Friends
+        - Amis
       summary: "Renvoie la liste des demandes d'amis"
       operationId: "getFriendrequests"
       responses:
@@ -315,7 +413,7 @@ paths:
   /friend:
     delete:
       tags:
-        - Friends
+        - Amis
       summary: "Supprimer un ami de la liste"
       operationId: "deletefriend"
       responses:
@@ -351,7 +449,7 @@ paths:
   /addfriend:
     post:
       tags:
-        - Friends
+        - Amis
       summary: "Ajouter un ami"
       operationId: "addFriend"
       responses:
@@ -401,7 +499,7 @@ paths:
   /friendRequestReply:
     post:
       tags:
-        - Friends
+        - Amis
       summary: "Répondre à une demande d'ami"
       operationId: "friendRequestReply"
       responses:
@@ -579,11 +677,4 @@ paths:
                   error:
                     type: string
                     example: "token not valid"
-
-
-
-
-
-
-
       
