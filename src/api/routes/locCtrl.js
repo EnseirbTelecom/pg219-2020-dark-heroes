@@ -19,8 +19,10 @@ var positionCollection = db.collection('PositionCollection');
 function endDurationDate(activation_date, duration) {
     var act_date = new Date(activation_date);
     var t = act_date.getTime();
+    console.log(duration)
     // On multiplie par 1000 pour une duration en seconde car le time est exprimé en millisecondes
     var endTime = t + duration * 1000
+    console.log(endTime)
     return endTime
 };
 
@@ -57,7 +59,8 @@ exports.getMyCurrentPosition = async function(req, res) {
         const position = await findPosition.findPositionByEmail(user.email);
         if (user != null) {
             if (position != null) {
-                return res.status(200).json({ position: position, status: 200 });
+                console.log(position.duration)
+                return res.status(200).json({ position: position,time:new Date(endDurationDate(position.date,parseInt(position.duration,10))), status: 200 });
             } else {
                 return res.status(201).json({ status: 201, state: 'you don\'t post current position' });
             }
@@ -79,7 +82,6 @@ exports.getCurrentPosition = async function(req, res) {
     var email = req.body.email;
     if (userId != -1) {
         const position = await findPosition.findPositionByEmail(email);
-        console.log(position);
 
         if (position != null) {
             return res.status(200).json({ position: position, status: 200 });
@@ -109,34 +111,28 @@ exports.addPosition = async function(req, res) {
             position = await findPosition.findPositionByEmail(user.email);
             var current_lat = req.body.lat;
             var current_long = req.body.long;
-            var duration = req.body.duration;
+            var duration = req.body.duration.split(':');
+            duration=(parseInt(duration[0],10)*60+parseInt(duration[1],10))*60
+        
             var message = req.body.message;
             var hist_positions = user.hist_positions;
             var currentDate = new Date();
-            if (position != null) {
+            if(position!=null){
+            if (duration != null) {
                 var oldPosition = { hist_lat: position.lat, hist_long: position.long, hist_date: position.date, message: position.message, duration: position.duration };
-                if (oldPosition.duration != null){
-                    var endTime = endDurationDate(oldPosition.hist_date, oldPosition.duration);
                     var currentDate = new Date();
-                    var currentTime = currentDate.getTime();
-                    if (currentTime > endTime) {
+    
                         hist_positions.push(oldPosition);
-                        console.log(position._id);
+
                         await upPos.updatePosition(position._id, { long: current_long, lat: current_lat, date: currentDate, duration: duration, message: message });
 
                         return res.status(200).json({ state: 'Position added', status: 200 });
-                    }       
+            }
                     else {
                         return res.status(401).json({ state: 'Duration too short', status: 401 });
                     }
 
-                }
-                else{
-                    hist_positions.push(oldPosition);
-                    console.log(position._id);
-                    await upPos.updatePosition(position._id, { long: current_long, lat: current_lat, date: currentDate, duration: duration, message: message });
-                }
-            } else {
+            }else {
                 position = positionModel.positionInit();
                 position.email = user.email;
                 position.long = current_long;
@@ -153,12 +149,10 @@ exports.addPosition = async function(req, res) {
 
         } else
             return res.status(403);
-
-
-    } else {
+        } else
         return res.status(403);
 
-    }
+
 }
 
 exports.deletePosition = async function(req, res) {
@@ -168,7 +162,6 @@ exports.deletePosition = async function(req, res) {
     var date = new Date(req.body.date);
     var current = req.body.current;
     var haveToUpdate = false;
-    console.log(date)
     if (userId != -1) {
         user = await findUser.getUserByID(userId);
         if (user != null) {
@@ -221,7 +214,6 @@ exports.getFriendsCurrentPosition = async function(req, res) {
         });
         if (friendlist != null) {
             const friendsCurrentPosition = await findPosition.findFriendsPosition(friendlist);
-            console.log(friendsCurrentPosition);
             if (friendsCurrentPosition != null) {
                 return res.status(200).json({ friendsPosition: friendsCurrentPosition, status: 200 });
             } else {

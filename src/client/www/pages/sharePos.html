@@ -20,11 +20,11 @@
                                                 margin: auto;
                                                 width: 50%;
                                                 padding: 10px;
-                                                font-size: 17pt;
+                                                font-size: 10pt;
                                                 font-family: cursive;
                                                 color: black;
                                                 filter:drop-shadow(3px 3px 2px #000000);">
-                    Friend Finder
+                    Share Your Position
                 </div>
                 <div class="right">
                     <a class="link icon-only color-red" @click="logout">
@@ -147,7 +147,7 @@
 
                                 .bindPopup(
                                     "<form class='leafpop'>date : " + new Date(res.position.date) + "<br>" + "message : " +
-                                    res.position.message + "<br>" + "expire in " + res.position.time + " min" + "<br>" +
+                                    res.position.message + "<br>" + "expire in " + res.position.duration + " min" + "<br>" +
                                     "<a class='button' id='delPos' > delete this position </a></form>"
                                 );
                             navigator.geolocation.getCurrentPosition(function (position) {
@@ -223,6 +223,9 @@
 
 
 
+                                            }
+                                            else if (res.status==401){
+                                                app.dialog.alert(res.state);
                                             }
                                         })
 
@@ -306,6 +309,9 @@
 
 
                                 }
+                                else if (res.status==401){
+                                                app.dialog.alert(res.state);
+                                            }
                             })
 
 
