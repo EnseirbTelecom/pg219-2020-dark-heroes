@@ -1,5 +1,6 @@
 //imports
 var mongoose = require('mongoose');
+var demo= require('./db_demo/demo');
 // function of deployment
 
 exports.deploy = function() {
@@ -27,6 +28,8 @@ exports.deploy = function() {
         .then(function(userCollection) {
             console.log('PositionCollection is created!'); // Check model/PositionCollection to see the model of position 
         });
+
+//demo.getDbDemo();
 
     return db;
 }

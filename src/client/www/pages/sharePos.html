@@ -147,7 +147,7 @@
 
                                 .bindPopup(
                                     "<form class='leafpop'>date : " + new Date(res.position.date) + "<br>" + "message : " +
-                                    res.position.message + "<br>" + "expire in " + res.position.duration + " min" + "<br>" +
+                                    res.position.message + "<br>" + "expire at " + res.time  + "<br>" +
                                     "<a class='button' id='delPos' > delete this position </a></form>"
                                 );
                             navigator.geolocation.getCurrentPosition(function (position) {
@@ -278,6 +278,11 @@
 
                     L.DomEvent.addListener(buttonSubmit2, 'click', function (e) {
                         var time = document.querySelector('#expiration').value;
+                        if (!time){
+                            app.dialog.alert('please configure duration time ')
+
+                        }
+                        else{
                         var msg = document.querySelector('#msg').value;
                         //map init with current positions
                         var token = localStorage.getItem("token");
@@ -313,6 +318,7 @@
                                                 app.dialog.alert(res.state);
                                             }
                             })
+                        }
 
 
                     });

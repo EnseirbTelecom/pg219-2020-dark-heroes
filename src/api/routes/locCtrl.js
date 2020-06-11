@@ -22,7 +22,6 @@ function endDurationDate(activation_date, duration) {
     console.log(duration)
     // On multiplie par 1000 pour une duration en seconde car le time est exprimé en millisecondes
     var endTime = t + duration * 1000
-    console.log(endTime)
     return endTime
 };
 
@@ -56,10 +55,24 @@ exports.getMyCurrentPosition = async function(req, res) {
     var userId = jwtUtils.getUserId(headerAuth);
     if (userId != -1) {
         const user = await findUser.getUserByID(userId);
-        const position = await findPosition.findPositionByEmail(user.email);
+        var position = await findPosition.findPositionByEmail(user.email);
+        var act_date= new Date();
+        var time= act_date.getTime();
+        if (position != null) {
+    
+            var expiration=endDurationDate(position.date,position.duration);
+            if (time > expiration){
+            var oldPosition = { hist_lat: position.lat, hist_long: position.long, hist_date: position.date, message: position.message, duration: position.duration };
+            user.hist_positions.pop(oldPosition);
+            await up.updateUser(user._id,{hist_positions:user.hist_positions});
+            await del.deletePositionByEmail(user.email);
+            position=null;
+                
+            }
+        }
+            
         if (user != null) {
             if (position != null) {
-                console.log(position.duration)
                 return res.status(200).json({ position: position,time:new Date(endDurationDate(position.date,parseInt(position.duration,10))), status: 200 });
             } else {
                 return res.status(201).json({ status: 201, state: 'you don\'t post current position' });
@@ -214,10 +227,26 @@ exports.getFriendsCurrentPosition = async function(req, res) {
         });
         if (friendlist != null) {
             const friendsCurrentPosition = await findPosition.findFriendsPosition(friendlist);
+            var act_date= new Date();
+            var time= act_date.getTime();
+            for (var i=0; i<friendsCurrentPosition.length;i++){
+                var element=friendsCurrentPosition[i];
+                var expiration=endDurationDate(element.date,element.duration);
+                if (time > expiration){
+                    const friend= await getUserByEmail(element.email);
+                var oldPosition = { hist_lat: element.lat, hist_long: element.long, hist_date: element.date, message: element.message, duration: elemnt.duration };
+                friend.hist_positions.pop(oldPosition);
+                await up.updateUser(friend._id,{hist_positions:friend.hist_positions});
+                await del.deletePositionByEmail(friend.email);
+                friendsCurrentPosition.pop(i);
+                    
+                }
+                i=i+1;
+            };
             if (friendsCurrentPosition != null) {
                 return res.status(200).json({ friendsPosition: friendsCurrentPosition, status: 200 });
             } else {
-                return res.status(201).json({ state: "no friends position are available", status: 200 });
+            return res.status(201).json({ state: "no friends position are available", status: 200 });
             }
         } else {
             return res.status(201).json({ state: "add friends to consult positions", status: 201 })

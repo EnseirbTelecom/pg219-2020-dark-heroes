@@ -72,7 +72,7 @@ exports.addFriend = async function(req, res) {
                 }
                 var friends = user.friends;
                 friends.forEach(element => {
-                    if (element == friend) {
+                    if (element.email == friend) {
                         return res.status(400).json({ error: friend + ' is already your friend.', status: 400 })
                     }
 
