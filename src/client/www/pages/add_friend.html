@@ -54,6 +54,7 @@
     <div id="snackbar1">Friend not found</div>
     <div id="snackbar2">It is your email</div>
     <div id="snackbar3">Is already your friend</div>
+    <div id="snackbar4">Friend request already sent</div>
 
   </div>
 </template>
@@ -94,6 +95,11 @@
               }
               if (res.status == 400) {
                 var x = document.getElementById("snackbar3");
+                x.className = "show";
+                setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+              }
+              if (res.status == 402) {
+                var x = document.getElementById("snackbar4");
                 x.className = "show";
                 setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
               }
