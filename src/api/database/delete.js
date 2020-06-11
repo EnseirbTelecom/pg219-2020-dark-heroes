@@ -15,5 +15,5 @@ exports.deleteUserById = async function(id) {
 }
 
 exports.deletePositionByEmail = async function(email) {
-    const del = positionCollection.deleteOne({ email: email });
+    const del = positionCollection.deleteMany({ email: email });
 }

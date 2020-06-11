@@ -14,6 +14,12 @@ exports.findPositionByEmail = async function(email) {
     return position;
 }
 
+exports.findPositionByDate = async function(date) {
+    const position = await collection.findOne({ date: date });
+    console.log(position);
+    return position;
+}
+
 exports.findFriendsPosition = async function(friends) {
     const positions = await collection.find({
         email: { $in: friends }

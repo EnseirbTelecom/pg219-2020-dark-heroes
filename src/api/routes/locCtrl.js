@@ -133,7 +133,6 @@ exports.addPosition = async function(req, res) {
             if(position!=null){
                 
                 var oldPosition = { hist_lat: position.lat, hist_long: position.long, hist_date: position.date, message: position.message, duration: position.duration };
-                    var currentDate = new Date();
     
                         hist_positions.push(oldPosition);
 
@@ -149,7 +148,9 @@ exports.addPosition = async function(req, res) {
                 position.date = currentDate;
                 position.duration = duration;
                 position.message = message;
-                positionCollection.insertOne(position);
+                if(findPosition.findPositionByDate(position.date)!=null){
+                await positionCollection.insertOne(position);
+                }
 
             }
 
@@ -169,7 +170,6 @@ exports.deletePosition = async function(req, res) {
     var headerAuth = req.headers.authorization;
     var userId = jwtUtils.getUserId(headerAuth);
     var date = new Date(req.body.date);
-    console.log('in');
     var current = req.body.current;
     var haveToUpdate = false;
     if (userId != -1) {
