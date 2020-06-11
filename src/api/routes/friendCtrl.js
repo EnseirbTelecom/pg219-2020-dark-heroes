@@ -78,6 +78,12 @@ exports.addFriend = async function(req, res) {
 
                 });
                 var friend_pending = user.friend_pending;
+                friend_pending.forEach(element => {
+                    if (element.email == friend) {
+                        return res.status(400).json({ error: friend + ' friend request already sent ', status: 400 })
+                    }
+
+                });
                 var send_request = Friend.friend_requests;
                 friend_pending.push({pseudo: Friend.pseudo, email: friend});
                 send_request.push({pseudo: user.pseudo, email: user.email });

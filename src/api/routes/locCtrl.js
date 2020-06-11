@@ -63,7 +63,7 @@ exports.getMyCurrentPosition = async function(req, res) {
             var expiration=endDurationDate(position.date,position.duration);
             if (time > expiration){
             var oldPosition = { hist_lat: position.lat, hist_long: position.long, hist_date: position.date, message: position.message, duration: position.duration };
-            user.hist_positions.pop(oldPosition);
+            user.hist_positions.push(oldPosition);
             await up.updateUser(user._id,{hist_positions:user.hist_positions});
             await del.deletePositionByEmail(user.email);
             position=null;
@@ -131,19 +131,15 @@ exports.addPosition = async function(req, res) {
             var hist_positions = user.hist_positions;
             var currentDate = new Date();
             if(position!=null){
-            if (duration != null) {
+                
                 var oldPosition = { hist_lat: position.lat, hist_long: position.long, hist_date: position.date, message: position.message, duration: position.duration };
                     var currentDate = new Date();
     
                         hist_positions.push(oldPosition);
 
                         await upPos.updatePosition(position._id, { long: current_long, lat: current_lat, date: currentDate, duration: duration, message: message });
-
+                        await up.updateUser(userId,{hist_positions : hist_positions});
                         return res.status(200).json({ state: 'Position added', status: 200 });
-            }
-                    else {
-                        return res.status(401).json({ state: 'Duration too short', status: 401 });
-                    }
 
             }else {
                 position = positionModel.positionInit();
@@ -173,6 +169,7 @@ exports.deletePosition = async function(req, res) {
     var headerAuth = req.headers.authorization;
     var userId = jwtUtils.getUserId(headerAuth);
     var date = new Date(req.body.date);
+    console.log('in');
     var current = req.body.current;
     var haveToUpdate = false;
     if (userId != -1) {
@@ -186,7 +183,7 @@ exports.deletePosition = async function(req, res) {
                 var hist_positions = user.hist_positions;
 
                 hist_positions.forEach(function(element, index) {
-                    if (new Date(element.hist_date).getTime() === date.getTime()) {
+                    if ((new Date(element.hist_date).getTime() <= date.getTime()+1000)&&(new Date(element.hist_date).getTime() >= date.getTime()-1000)) {
                         hist_positions.splice(index, 1);
                         haveToUpdate = true;
 
