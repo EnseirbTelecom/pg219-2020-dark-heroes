@@ -1,6 +1,6 @@
 <template>
-	<div class="page">
-	  <div class="page-content">
+  <div class="page">
+    <div class="page-content">
 
       <div class="navbar color-theme-teal">
         <div class="navbar-bg"></div>
@@ -11,11 +11,13 @@
               <span class="if-not-md">Back</span>
             </a>
           </div>
-          <div class="title" style="font-family: cursive"><p class="text-color-teal">Add a Friend</p></div>
+          <div class="title" style="font-family: cursive">
+            <p class="text-color-teal">Add a Friend</p>
+          </div>
           <div class="right">
             <a class="link icon-only">
               <i class="icon material-icons md-only">person_add</i>
-							<i class="icon f7-icons if-not-md">person_badge_plus_fill</i>
+              <i class="icon f7-icons if-not-md">person_badge_plus_fill</i>
             </a>
           </div>
         </div>
@@ -30,78 +32,90 @@
                                                -ms-transform: translate(-50%, -50%);
                                                transform: translate(-50%, -50%);">
 
-            <div class="item-content item-input">
-              <div class="item-inner">
-                <div class="item-title item-label" style = "font-size: 12pt;"><center><p><b>You can add a friend by his email.<b><p><center></div>
-                <div class="item-input-wrap">
-                  <input id="pseudo" type="text" placeholder="Enter your friend's email">
-                </div>
-              </div>
+        <div class="item-content item-input">
+          <div class="item-inner">
+            <div class="item-title item-label" style="font-size: 12pt;">
+              <center>
+                <p><b>You can add a friend by his email.<b>
+                      <p>
+                        <center>
             </div>
+            <div class="item-input-wrap">
+              <input id="pseudo" type="text" placeholder="Enter your friend's email">
+            </div>
+          </div>
+        </div>
       </form>
-        <div class="col"><a @click="addfriend" class="button convert-form-to-data" href="#">Submit</a></div>
-				
+      <div class="col"><a @click="addfriend" class="button convert-form-to-data" href="#">Submit</a></div>
+
     </div>
 
-    <div id="snackbar" >Friend request sent</div>
-    <div id="snackbar1" >Friend not found</div>
-    <div id="snackbar2" >It is your email</div>
+    <div id="snackbar">Friend request sent</div>
+    <div id="snackbar1">Friend not found</div>
+    <div id="snackbar2">It is your email</div>
+    <div id="snackbar3">Is already your friend</div>
 
   </div>
 </template>
 <script>
-    return {
-        methods: {
+  return {
+    methods: {
 
-            addfriend: function() {
+      addfriend: function () {
 
-                const pseudo = document.querySelector('#pseudo').value;
-                const queryData = this.friend_request();
-                var token = localStorage.getItem('token');
+        const pseudo = document.querySelector('#pseudo').value;
+        const queryData = this.friend_request();
+        var token = localStorage.getItem('token');
 
-                headers = {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + token,
-                }
+        headers = {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + token,
+        }
 
-                fetch(queryData.url, {
-                        method: queryData.method,
-                        headers: headers,
+        fetch(queryData.url, {
+          method: queryData.method,
+          headers: headers,
 
-                        body: JSON.stringify({
-                            friend: pseudo,
-                        })
-                    })
-                    .then(res => res.json())
-                    .then(res => {
-                        if (res.status == 200) {
-                          var x = document.getElementById("snackbar");
-                          x.className = "show";
-                          setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
-                        } else {if (res.status == 401){
-                          var x = document.getElementById("snackbar2");
-                          x.className = "show";
-                          setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
-                        }
-                        else {
-                          var x = document.getElementById("snackbar1");
-                          x.className = "show";
-                          setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
-                        }
-                        }
-                    })
-                    .catch(err => this.$app.dialog.alert('Error ' + err))
+          body: JSON.stringify({
+            friend: pseudo,
+          })
+        })
+          .then(res => res.json())
+          .then(res => {
+            if (res.status == 200) {
+              var x = document.getElementById("snackbar");
+              x.className = "show";
+              setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+            } else {
+              if (res.status == 401) {
+                var x = document.getElementById("snackbar2");
+                x.className = "show";
+                setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+              }
+              if (res.status == 400) {
+                var x = document.getElementById("snackbar3");
+                x.className = "show";
+                setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+              }
+              else {
+                var x = document.getElementById("snackbar1");
+                x.className = "show";
+                setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+              }
+            }
+          })
+          .catch(err => this.$app.dialog.alert('Error ' + err))
 
 
-            },
+      },
 
-            friend_request: function() {
-                return {
-                    url: "http://localhost:3000/addFriend",
-                    method: "POST"
-                }
-            },
+      friend_request: function () {
+        return {
+          url: "http://localhost:3000/addFriend",
+          method: "POST"
+        }
+      },
 
-        },
-    }
+    },
+  }
 </script>
