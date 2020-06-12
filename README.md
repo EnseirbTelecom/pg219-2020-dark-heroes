@@ -32,6 +32,7 @@ Pour démarer l'application, dans src/client, éxécutez la commande npm run ser
 
 Vous pouvez trouver un vidéo démonstration de l'application en cliquant [ici](https://www.youtube.com/watch?v=h624ghRCrwU&t=3s).
 
+Il est possible de retrouver les détails du fonctionnement de l'application et de l'ensemble des requêtes dans la documentation: doc/redoc-static.html
 
 ## Auteurs
 
