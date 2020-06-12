@@ -12,7 +12,7 @@ Pour l'installation et la mise en fonctionnement de l'application il est nécess
 - Node.js
 - MangoDB
 - Cordova
--Framework7
+- Framework7
 
 ### Installation
 
