@@ -36,7 +36,7 @@ Il est possible de retrouver les détails du fonctionnement de l'application et 
 
 ## Auteurs
 
-Team Dark-Heroes:
+**Team Dark-Heroes:**
 
 - Yassine Bellamine
 - Marc-Antoine Garcia
